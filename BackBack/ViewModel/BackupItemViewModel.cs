@@ -88,53 +88,14 @@ namespace BackBack.ViewModel
                 {
                     try
                     {
-                        var basePath = new DirectoryInfo(Source);
-                        var target = new DirectoryInfo(Destination);
-
-                        var collectedFiles = new HashSet<string>();
-
-                        var collector = new FileCollector();
-                        if (Ignores is { })
+                        if (Directory.Exists(Source))
                         {
-                            collector.AddListModule(Ignores.GetLines().SkipEmpty());
+                            BackupDir();
                         }
-
-                        Parallel.ForEach(collector.EnumerateFiles(Source), (file) =>
-                        //foreach (string file in collector.EnumerateFiles(Source))
+                        else if (File.Exists(Source))
                         {
-                            if (file is null)
-                            {
-                                return;
-                                //continue;
-                            }
-
-                            string newFile = FileUtils.MakePath(basePath, target, file);
-                            if (newFile is null)
-                            {
-                                return;
-                                //continue;
-                            }
-
-                            collectedFiles.Add(newFile);
-                            if (File.Exists(newFile) && FileUtils.AreEqual(file, newFile))
-                            {
-                                return;
-                                //continue;
-                            }
-
-                            Debug.WriteLine($"{file} -> {newFile}");
-                            FileUtils.Copy(basePath, target, new FileInfo(file), true);
-                        //}
-                        });
-
-                        //Parallel.ForEach(FileUtils.Walk(target.FullName, FileSystemEnumeration.FilesOnly), (file) =>
-                        //{
-                        //    if (!collectedFiles.Contains(file))
-                        //    {
-                        //        Debug.WriteLine($"Removing {file}");
-                        //        File.Delete(file);
-                        //    }
-                        //});
+                            BackupFile();
+                        }
                     }
                     finally
                     {
@@ -142,6 +103,59 @@ namespace BackBack.ViewModel
                     }
                 });
             }
+        }
+
+        private void BackupFile() => FileUtils.Copy(new FileInfo(Source), new FileInfo(Destination));
+
+        private void BackupDir()
+        {
+            var basePath = new DirectoryInfo(Source);
+            var target = new DirectoryInfo(Destination);
+
+            var collectedFiles = new HashSet<string>();
+
+            var collector = new FileCollector();
+            if (Ignores is { })
+            {
+                collector.AddListModule(Ignores.GetLines().SkipEmpty());
+            }
+
+            Parallel.ForEach(collector.EnumerateFiles(Source), (file) =>
+            //foreach (string file in collector.EnumerateFiles(Source))
+            {
+                if (file is null)
+                {
+                    return;
+                    //continue;
+                }
+
+                string newFile = FileUtils.MakePath(basePath, target, file);
+                if (newFile is null)
+                {
+                    return;
+                    //continue;
+                }
+
+                collectedFiles.Add(newFile);
+                if (File.Exists(newFile) && FileUtils.AreEqual(file, newFile))
+                {
+                    return;
+                    //continue;
+                }
+
+                Debug.WriteLine($"{file} -> {newFile}");
+                FileUtils.Copy(basePath, target, new FileInfo(file), true);
+                //}
+            });
+
+            //Parallel.ForEach(FileUtils.Walk(target.FullName, FileSystemEnumeration.FilesOnly), (file) =>
+            //{
+            //    if (!collectedFiles.Contains(file))
+            //    {
+            //        Debug.WriteLine($"Removing {file}");
+            //        File.Delete(file);
+            //    }
+            //});
         }
     }
 }
