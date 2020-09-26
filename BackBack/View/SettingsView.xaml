@@ -1,4 +1,4 @@
-<base:ViewBase x:Class="BackBack.View.EditBackupItemView"
+<base:ViewBase x:Class="BackBack.View.SettingsView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,7 +8,7 @@
         xmlns:base="clr-namespace:RF.WPF.MVVM;assembly=RF.WPF"
         xmlns:vm="clr-namespace:BackBack.ViewModel"
         xmlns:v="clr-namespace:BackBack.View"
-        x:TypeArguments="vm:EditBackupItemViewModel"
+        x:TypeArguments="vm:SettingsViewModel"
         mc:Ignorable="d"
         Title="{Binding Title}"
         Style="{DynamicResource RF.Window}"
@@ -39,8 +39,8 @@
                 <StackPanel Margin="{StaticResource PanelMargin}">
                     <TextBlock
                     Style="{DynamicResource TextLabel}"
-                    Text="Name"/>
-                    <TextBox Style="{DynamicResource TextEntry}" Text="{Binding Name}" IsReadOnly="True"/>
+                    Text="Settings Directory"/>
+                    <TextBox Style="{DynamicResource SelectableLabel}" Text="{Binding SettingsDir}"/>
                 </StackPanel>
 
                 <StackPanel Margin="{StaticResource PanelMargin}">

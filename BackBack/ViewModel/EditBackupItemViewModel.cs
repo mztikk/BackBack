@@ -1,3 +1,4 @@
+using BackBack.Settings;
 using RF.WPF.MVVM;
 using RF.WPF.Navigation;
 
@@ -7,7 +8,12 @@ namespace BackBack.ViewModel
     {
         private readonly BackupData _backupData;
 
-        public EditBackupItemViewModel(INavigationService navigationService, BackupData backupData) : base(navigationService) => _backupData = backupData;
+        public EditBackupItemViewModel(INavigationService navigationService, BackupData backupData) : base(navigationService)
+        {
+            Title = "Edit";
+
+            _backupData = backupData;
+        }
 
         public BackupItemViewModel BackupItem { get; set; }
 
@@ -19,6 +25,8 @@ namespace BackBack.ViewModel
             Source = BackupItem.Source;
             Destination = BackupItem.Destination;
             Ignores = BackupItem.Ignores;
+
+            Title = $"Edit '{Name}'";
         }
 
         private string _name;

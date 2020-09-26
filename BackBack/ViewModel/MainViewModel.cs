@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using BackBack.Settings;
 using RF.WPF.MVVM;
 using RF.WPF.Navigation;
 using Stylet;
@@ -13,6 +14,8 @@ namespace BackBack.ViewModel
 
         public MainViewModel(IContainer container, INavigationService navigationService, BackupData backupData) : base(navigationService)
         {
+            Title = ApplicationInfo.s_appName;
+
             _container = container;
             _backupData = backupData;
 
@@ -31,8 +34,6 @@ namespace BackBack.ViewModel
             get => _backupItems;
             set { _backupItems = value; NotifyOfPropertyChange(); }
         }
-
-        public string Get() => "MainViewModel";
 
         public void EditBackupItem(BackupItemViewModel backupItemViewModel)
         {
@@ -56,6 +57,11 @@ namespace BackBack.ViewModel
             BackupItems.Remove(backupItem);
             _backupData.Data.Remove(backupItem.Name);
             _backupData.Save();
+        }
+
+        public void OpenSettings()
+        {
+            _navigationService.NavigateTo<SettingsViewModel>();
         }
     }
 

@@ -34,7 +34,11 @@
                     </Button>
                 </StackPanel>
 
-                <Button Style="{DynamicResource IconButton}" Grid.Column="2">
+                <Button
+                    Grid.Column="2"
+                    Style="{DynamicResource IconButton}"
+                    Command="{s:Action OpenSettings}"
+                    >
                     <Image Source="{StaticResource settingsDrawingImage}"/>
                 </Button>
             </Grid>

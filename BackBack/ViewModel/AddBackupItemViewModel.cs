@@ -1,3 +1,4 @@
+using BackBack.Settings;
 using RF.WPF.MVVM;
 using RF.WPF.Navigation;
 
@@ -7,7 +8,12 @@ namespace BackBack.ViewModel
     {
         private readonly BackupData _backupData;
 
-        public AddBackupItemViewModel(INavigationService navigationService, BackupData backupData) : base(navigationService) => _backupData = backupData;
+        public AddBackupItemViewModel(INavigationService navigationService, BackupData backupData) : base(navigationService)
+        {
+            Title = "Add New";
+
+            _backupData = backupData;
+        }
 
         public BackupItemViewModel BackupItem { get; set; }
 
