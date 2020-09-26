@@ -85,18 +85,27 @@
 
                                             <Border Style="{DynamicResource BorderLine}" Grid.Column="0" Padding="8">
                                                 <StackPanel Orientation="Horizontal">
-                                                    <Button Style="{DynamicResource IconButton}" Margin="0,0,4,0"
-                                                            Command="{s:Action EditBackupItem}"
-                                                            CommandParameter="{Binding}">
+                                                    <Button
+                                                        Style="{DynamicResource IconButton}"
+                                                        Command="{s:Action EditBackupItem}"
+                                                        CommandParameter="{Binding}">
                                                         <Image Source="{StaticResource editDrawingImage}"/>
                                                     </Button>
+
                                                     <Button
                                                         Style="{DynamicResource IconButton}"
                                                         IsEnabled="{Binding Running, Converter={StaticResource InverseBooleanConverter}}"
                                                         Command="{Binding BackupCommand}"
-                                                        CommandParameter="{Binding}"
-                                                        >
+                                                        CommandParameter="{Binding}">
                                                         <Image Source="{StaticResource backup2DrawingImage}"/>
+                                                    </Button>
+
+                                                    <Button
+                                                        Style="{DynamicResource IconButton}"
+                                                        IsEnabled="{Binding Running, Converter={StaticResource InverseBooleanConverter}}"
+                                                        Command="{s:Action RemoveItem}"
+                                                        CommandParameter="{Binding}">
+                                                        <Image Source="{StaticResource removeDrawingImage}"/>
                                                     </Button>
                                                 </StackPanel>
                                             </Border>

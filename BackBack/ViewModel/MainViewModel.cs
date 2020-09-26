@@ -50,6 +50,13 @@ namespace BackBack.ViewModel
                 BackupItems.Add(vm.BackupItem);
             }
         }
+
+        public void RemoveItem(BackupItemViewModel backupItem)
+        {
+            BackupItems.Remove(backupItem);
+            _backupData.Data.Remove(backupItem.Name);
+            _backupData.Save();
+        }
     }
 
     public class BackupItem
