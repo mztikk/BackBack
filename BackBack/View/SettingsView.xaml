@@ -42,40 +42,7 @@
                     Text="Settings Directory"/>
                     <TextBox Style="{DynamicResource SelectableLabel}" Text="{Binding SettingsDir}"/>
                 </StackPanel>
-
-                <StackPanel Margin="{StaticResource PanelMargin}">
-                    <TextBlock
-                    Style="{DynamicResource TextLabel}"
-                    Text="Source"/>
-                    <TextBox Style="{DynamicResource TextEntry}" Text="{Binding Source, UpdateSourceTrigger=PropertyChanged}"/>
-                </StackPanel>
-
-                <StackPanel Margin="{StaticResource PanelMargin}">
-                    <TextBlock
-                    Style="{DynamicResource TextLabel}"
-                    Text="Destination"/>
-                    <TextBox Style="{DynamicResource TextEntry}" Text="{Binding Destination, UpdateSourceTrigger=PropertyChanged}"/>
-                </StackPanel>
             </StackPanel>
-
-            <Grid Grid.Row="1" Margin="{StaticResource PanelMargin}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-
-                <TextBlock
-                    Grid.Row="0"
-                    Style="{DynamicResource TextLabel}"
-                    Text="Ignores"/>
-                <TextBox
-                    Grid.Row="1"
-                    Style="{DynamicResource TextEntry}"
-                    AcceptsReturn="True"
-                    VerticalScrollBarVisibility="Auto"
-                    HorizontalScrollBarVisibility="Auto"
-                    Text="{Binding Ignores, UpdateSourceTrigger=PropertyChanged}"/>
-            </Grid>
         </Grid>
 
         <StackPanel Grid.Row="2"
