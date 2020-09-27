@@ -64,7 +64,7 @@
                 <TabItem Style="{DynamicResource TabHeader}" Header="Post Completion">
                     <TabControl Grid.Row="0" Style="{DynamicResource Tab}">
 
-                        <TabItem Style="{DynamicResource TabHeader}" Header="Zipping">
+                        <TabItem Style="{DynamicResource TabHeader}" Header="Zip Archiving">
                             <Grid Margin="{StaticResource PanelMargin}">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="auto"/>
@@ -86,7 +86,7 @@
                                                     </CheckBox>
                                                     <StackPanel Margin="0,4" IsEnabled="{Binding LimitArchives}" Visibility="{Binding LimitArchives, Converter={StaticResource BoolVisibilityConverter}}">
                                                         <TextBlock Style="{DynamicResource TextLabel}" Text="{Binding NumberOfArchives, StringFormat={}Number of Zip Archives to keep: {0}}"/>
-                                                        <Slider Minimum="1" Maximum="50" SmallChange="1" LargeChange="5" IsSnapToTickEnabled="True" Value="{Binding NumberOfArchives}"/>
+                                                        <Slider Minimum="1" Maximum="50" SmallChange="1" LargeChange="5" IsSnapToTickEnabled="True" Value="{Binding NumberOfArchives}" AutoToolTipPlacement="BottomRight"/>
                                                     </StackPanel>
                                                 </StackPanel>
                                             </StackPanel>

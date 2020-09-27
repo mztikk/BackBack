@@ -17,7 +17,17 @@ namespace BackBack.LUA
             }
         }
 
-        public static void ZipDirectory(string source, string dest) => ZipFile.CreateFromDirectory(source, dest, CompressionLevel.Optimal, true);
+        public static void ZipDirectory(string source, string dest)
+        {
+            string targetDir = Path.GetDirectoryName(dest);
+
+            if (!Directory.Exists(targetDir))
+            {
+                Directory.CreateDirectory(targetDir);
+            }
+
+            ZipFile.CreateFromDirectory(source, dest, CompressionLevel.Optimal, true);
+        }
 
         public static void Zip_File(string source, string dest)
         {

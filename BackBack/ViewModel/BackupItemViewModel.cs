@@ -145,6 +145,38 @@ namespace BackBack.ViewModel
                             BackupFile();
                         }
 
+                        if (ZipFiles)
+                        {
+                            string timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
+                            string zipFile = Path.ChangeExtension(Path.Combine(ZipFileDestination, $"{Name}_{timestamp}"), "zip");
+                            Debug.WriteLine(zipFile);
+                            LuaZip.Zip(Destination, zipFile);
+
+                            if (LimitArchives)
+                            {
+                                var archives = new List<string>();
+                                foreach (string file in FileUtils.GetFiles(ZipFileDestination, null))
+                                {
+                                    string fileName = Path.GetFileName(file);
+                                    if (fileName.StartsWith(Name) && fileName.EndsWith("zip"))
+                                    {
+                                        archives.Add(file);
+                                    }
+                                }
+
+                                archives.Sort();
+
+                                if (archives.Count > NumberOfArchives)
+                                {
+                                    int diff = (int)(archives.Count - NumberOfArchives);
+                                    for (int i = 0; i < diff; i++)
+                                    {
+                                        File.Delete(archives[i]);
+                                    }
+                                }
+                            }
+                        }
+
                         using Lua lua = _luaCreator.Invoke();
                         lua.SetValuesFromBackupItem(BackupItem);
                         lua.Run(PostCompletionScript);
