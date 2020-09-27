@@ -7,5 +7,9 @@
         public string Destination { get; set; }
         public string Ignores { get; set; }
         public string PostCompletionScript { get; set; }
+        public bool ZipFiles { get; set; }
+        public string ZipFileDestination { get; set; }
+        public bool LimitArchives { get; set; }
+        public double NumberOfArchives { get; set; }
     }
 }

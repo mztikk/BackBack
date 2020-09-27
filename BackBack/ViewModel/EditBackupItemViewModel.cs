@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using BackBack.Storage.Settings;
 using RF.WPF.MVVM;
 using RF.WPF.Navigation;
@@ -21,11 +22,9 @@ namespace BackBack.ViewModel
         {
             base.OnNavigatedTo();
 
-            Name = BackupItem.Name;
-            Source = BackupItem.Source;
-            Destination = BackupItem.Destination;
-            Ignores = BackupItem.Ignores;
-            PostCompletionScript = BackupItem.PostCompletionScript;
+            var ignores = new HashSet<string> { "BackupItem" };
+
+            PropertySync.Sync(BackupItem, this, ignores);
 
             Title = $"Edit '{Name}'";
         }
@@ -69,17 +68,40 @@ namespace BackBack.ViewModel
             set { _postCompletionScript = value; NotifyOfPropertyChange(); }
         }
 
+        private bool _zipFiles;
+        public bool ZipFiles
+        {
+            get => _zipFiles;
+            set { _zipFiles = value; NotifyOfPropertyChange(); }
+        }
+
+        private string _zipFileDestination;
+        public string ZipFileDestination
+        {
+            get => _zipFileDestination;
+            set { _zipFileDestination = value; NotifyOfPropertyChange(); }
+        }
+
+        private double _numberOfArchives;
+        public double NumberOfArchives
+        {
+            get => _numberOfArchives;
+            set { _numberOfArchives = value; NotifyOfPropertyChange(); }
+        }
+
+        private bool _limitArchives;
+        public bool LimitArchives
+        {
+            get => _limitArchives;
+            set { _limitArchives = value; NotifyOfPropertyChange(); }
+        }
+
         public void Save()
         {
-            BackupItem.Source = Source;
-            BackupItem.Destination = Destination;
-            BackupItem.Ignores = Ignores;
-            BackupItem.PostCompletionScript = PostCompletionScript;
+            var ignores = new HashSet<string> { "BackupItem" };
 
-            BackupItem.BackupItem.Source = Source;
-            BackupItem.BackupItem.Destination = Destination;
-            BackupItem.BackupItem.Ignores = Ignores;
-            BackupItem.BackupItem.PostCompletionScript = PostCompletionScript;
+            PropertySync.Sync(this, BackupItem, ignores);
+            PropertySync.Sync(this, BackupItem.BackupItem, ignores);
 
             _backupData.Data[Name] = BackupItem.BackupItem;
             _backupData.Save();

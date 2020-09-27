@@ -24,11 +24,8 @@ namespace BackBack.ViewModel
         {
             BackupItem = backupItem;
             _luaCreator = luaCreator;
-            Name = BackupItem.Name;
-            Source = BackupItem.Source;
-            Destination = BackupItem.Destination;
-            Ignores = BackupItem.Ignores;
-            PostCompletionScript = BackupItem.PostCompletionScript;
+
+            PropertySync.Sync(BackupItem, this, null);
 
             BackupCommand = new Command(Backup);
         }
@@ -74,6 +71,34 @@ namespace BackBack.ViewModel
         {
             get => _postCompletionScript;
             set { _postCompletionScript = value; NotifyOfPropertyChange(); }
+        }
+
+        private bool _zipFiles;
+        public bool ZipFiles
+        {
+            get => _zipFiles;
+            set { _zipFiles = value; NotifyOfPropertyChange(); }
+        }
+
+        private string _zipFileDestination;
+        public string ZipFileDestination
+        {
+            get => _zipFileDestination;
+            set { _zipFileDestination = value; NotifyOfPropertyChange(); }
+        }
+
+        private bool _limitArchives;
+        public bool LimitArchives
+        {
+            get => _limitArchives;
+            set { _limitArchives = value; NotifyOfPropertyChange(); }
+        }
+
+        private double _numberOfArchives;
+        public double NumberOfArchives
+        {
+            get => _numberOfArchives;
+            set { _numberOfArchives = value; NotifyOfPropertyChange(); }
         }
 
         private bool _running;
