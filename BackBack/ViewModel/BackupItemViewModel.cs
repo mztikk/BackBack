@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using BackBack.LUA;
 using BackBack.Models;
 using RF.WPF.MVVM;
 using RFReborn.Extensions;
@@ -16,15 +18,17 @@ namespace BackBack.ViewModel
     public class BackupItemViewModel : PropertyChangedBase
     {
         public readonly BackupItem BackupItem;
+        private readonly Func<Lua> _luaCreator;
 
-        public BackupItemViewModel(BackupItem backupItem)
+        public BackupItemViewModel(BackupItem backupItem, Func<Lua> luaCreator)
         {
             BackupItem = backupItem;
-
+            _luaCreator = luaCreator;
             Name = BackupItem.Name;
             Source = BackupItem.Source;
             Destination = BackupItem.Destination;
             Ignores = BackupItem.Ignores;
+            PostCompletionScript = BackupItem.PostCompletionScript;
 
             BackupCommand = new Command(Backup);
         }
@@ -63,6 +67,13 @@ namespace BackBack.ViewModel
         {
             get => _ignores;
             set { _ignores = value; NotifyOfPropertyChange(); }
+        }
+
+        private string _postCompletionScript;
+        public string PostCompletionScript
+        {
+            get => _postCompletionScript;
+            set { _postCompletionScript = value; NotifyOfPropertyChange(); }
         }
 
         private bool _running;
@@ -108,6 +119,12 @@ namespace BackBack.ViewModel
                             Status = $"Backing up File '{Source}'";
                             BackupFile();
                         }
+
+                        using Lua lua = _luaCreator.Invoke();
+                        lua.SetValue("source", Source);
+                        lua.SetValue("destination", Destination);
+                        lua.SetValue("name", Name);
+                        lua.Run(PostCompletionScript);
                     }
                     finally
                     {

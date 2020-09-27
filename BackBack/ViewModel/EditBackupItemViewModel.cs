@@ -25,6 +25,7 @@ namespace BackBack.ViewModel
             Source = BackupItem.Source;
             Destination = BackupItem.Destination;
             Ignores = BackupItem.Ignores;
+            PostCompletionScript = BackupItem.PostCompletionScript;
 
             Title = $"Edit '{Name}'";
         }
@@ -61,11 +62,11 @@ namespace BackBack.ViewModel
         }
 
 
-        private string _onCompletionScript;
-        public string OnCompletionScript
+        private string _postCompletionScript;
+        public string PostCompletionScript
         {
-            get => _onCompletionScript;
-            set { _onCompletionScript = value; NotifyOfPropertyChange(); }
+            get => _postCompletionScript;
+            set { _postCompletionScript = value; NotifyOfPropertyChange(); }
         }
 
         public void Save()
@@ -73,10 +74,12 @@ namespace BackBack.ViewModel
             BackupItem.Source = Source;
             BackupItem.Destination = Destination;
             BackupItem.Ignores = Ignores;
+            BackupItem.PostCompletionScript = PostCompletionScript;
 
             BackupItem.BackupItem.Source = Source;
             BackupItem.BackupItem.Destination = Destination;
             BackupItem.BackupItem.Ignores = Ignores;
+            BackupItem.BackupItem.PostCompletionScript = PostCompletionScript;
 
             _backupData.Data[Name] = BackupItem.BackupItem;
             _backupData.Save();

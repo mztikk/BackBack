@@ -1,3 +1,5 @@
+using System;
+using BackBack.LUA;
 using BackBack.Models;
 using BackBack.Storage.Settings;
 using RF.WPF.MVVM;
@@ -8,12 +10,14 @@ namespace BackBack.ViewModel
     public class AddBackupItemViewModel : ViewModelBase
     {
         private readonly BackupData _backupData;
+        private readonly Func<Lua> _luaCreator;
 
-        public AddBackupItemViewModel(INavigationService navigationService, BackupData backupData) : base(navigationService)
+        public AddBackupItemViewModel(INavigationService navigationService, BackupData backupData, Func<Lua> luaCreator) : base(navigationService)
         {
             Title = "Add New";
 
             _backupData = backupData;
+            _luaCreator = luaCreator;
         }
 
         public BackupItemViewModel BackupItem { get; set; }
@@ -69,7 +73,7 @@ namespace BackBack.ViewModel
             }
 
             var backupItem = new BackupItem { Name = Name, Source = Source, Destination = Destination, Ignores = Ignores };
-            BackupItem = new BackupItemViewModel(backupItem);
+            BackupItem = new BackupItemViewModel(backupItem, _luaCreator);
             _backupData.Data[Name] = backupItem;
             _backupData.Save();
 

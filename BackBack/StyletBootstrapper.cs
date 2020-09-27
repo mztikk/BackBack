@@ -1,3 +1,4 @@
+using BackBack.LUA;
 using BackBack.Storage;
 using BackBack.ViewModel;
 using RF.WPF;
@@ -14,6 +15,7 @@ namespace BackBack
             builder.AddModule(new RF.WPF.IocSetup());
             builder.AddModule(new IocSetup());
             builder.AddModule(new StorageIoc());
+            builder.AddModule(new LuaIoc());
         }
 
         protected override void Configure()

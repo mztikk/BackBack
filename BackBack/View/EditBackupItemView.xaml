@@ -106,7 +106,7 @@
                     AcceptsReturn="True"
                     VerticalScrollBarVisibility="Auto"
                     HorizontalScrollBarVisibility="Auto"
-                    Text="{Binding OnCompletionScript, UpdateSourceTrigger=PropertyChanged}"/>
+                    Text="{Binding PostCompletionScript, UpdateSourceTrigger=PropertyChanged}"/>
                     </Grid>
                 </TabItem>
             </TabControl>
