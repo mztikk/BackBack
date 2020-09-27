@@ -18,10 +18,8 @@ namespace BackBack.Storage
             }
         }
 
-        protected override void Load()
+        protected override void Setup()
         {
-            Bind<IocBase>().ToInstance(this);
-
             foreach (Type type in GetAllTypes())
             {
                 string? baseName = type.BaseType?.FullName;
