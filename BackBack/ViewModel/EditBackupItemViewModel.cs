@@ -1,4 +1,4 @@
-using BackBack.Settings;
+using BackBack.Storage.Settings;
 using RF.WPF.MVVM;
 using RF.WPF.Navigation;
 

@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\RF.WPF\RF.WPF\RF.WPF.csproj" />
+    <ProjectReference Include="..\BackBack.Models\BackBack.Models.csproj" />
+  </ItemGroup>
+
+</Project>

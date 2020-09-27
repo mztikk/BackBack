@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NLua" Version="1.5.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\RF.WPF\RF.WPF\RF.WPF.csproj" />
+    <ProjectReference Include="..\BackBack.Storage\BackBack.Storage.csproj" />
+  </ItemGroup>
+
+</Project>

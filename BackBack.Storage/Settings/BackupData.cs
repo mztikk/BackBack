@@ -1,14 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using BackBack.Models;
 using RF.WPF;
 
-namespace BackBack.Settings
+namespace BackBack.Storage.Settings
 {
-    public class Settings : Storage<Dictionary<string, string>>
+    public class BackupData : Storage<Dictionary<string, BackupItem>>
     {
-        public Settings() { }
+        public BackupData() { }
 
-        public Dictionary<string, string> Data { get; set; }
+        public Dictionary<string, BackupItem> Data { get; set; }
 
         public override void ILoad() => Data = Load();
         public override async Task SaveAsync() => await SaveAsync(Data);

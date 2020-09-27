@@ -1,3 +1,4 @@
+using BackBack.Storage.Settings;
 using RF.WPF.MVVM;
 using RF.WPF.Navigation;
 
@@ -5,9 +6,9 @@ namespace BackBack.ViewModel
 {
     public class SettingsViewModel : ViewModelBase
     {
-        private readonly Settings.Settings _settings;
+        private readonly Settings _settings;
 
-        public SettingsViewModel(INavigationService navigationService, Settings.Settings settings) : base(navigationService)
+        public SettingsViewModel(INavigationService navigationService, Settings settings) : base(navigationService)
         {
             Title = "Settings";
             _settings = settings;

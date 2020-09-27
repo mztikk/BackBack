@@ -1,5 +1,6 @@
 using System.Collections.Generic;
-using BackBack.Settings;
+using BackBack.Models;
+using BackBack.Storage.Settings;
 using RF.WPF.MVVM;
 using RF.WPF.Navigation;
 using RF.WPF.UI.Interaction;
@@ -64,13 +65,5 @@ namespace BackBack.ViewModel
         }
 
         public void OpenSettings() => _navigationService.NavigateTo<SettingsViewModel>();
-    }
-
-    public class BackupItem
-    {
-        public string Name { get; set; }
-        public string Source { get; set; }
-        public string Destination { get; set; }
-        public string Ignores { get; set; }
     }
 }
