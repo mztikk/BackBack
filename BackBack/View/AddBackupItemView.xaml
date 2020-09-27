@@ -40,7 +40,7 @@
                     <TextBlock
                     Style="{DynamicResource TextLabel}"
                     Text="Name"/>
-                    <TextBox Style="{DynamicResource TextEntry}" Text="{Binding Name}"/>
+                    <TextBox Style="{DynamicResource TextEntry}" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"/>
                 </StackPanel>
 
                 <StackPanel Margin="{StaticResource PanelMargin}">

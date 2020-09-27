@@ -57,6 +57,11 @@ namespace BackBack.ViewModel
 
         public void Save()
         {
+            if (string.IsNullOrWhiteSpace(Name))
+            {
+                return;
+            }
+
             if (_backupData.Data.ContainsKey(Name))
             {
                 return;

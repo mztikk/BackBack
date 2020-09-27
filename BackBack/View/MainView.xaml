@@ -60,7 +60,12 @@
                                             <RowDefinition Height="auto"/>
                                             <RowDefinition Height="auto"/>
                                             <RowDefinition Height="auto"/>
+                                            <RowDefinition Height="auto"/>
                                         </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="auto"/>
+                                            <ColumnDefinition Width="auto"/>
+                                        </Grid.ColumnDefinitions>
 
                                         <StackPanel Grid.Row="0">
                                             <TextBlock
@@ -113,12 +118,13 @@
                                                     </Button>
                                                 </StackPanel>
                                             </Border>
-
-                                            <StackPanel Grid.Column="2">
-                                                <TextBlock
-                                                    Style="{DynamicResource TextLabel}"
-                                                    Text="{Binding Running}"/>
-                                            </StackPanel>
+                                        </Grid>
+                                        
+                                        <Grid Grid.Row="3">
+                                            <TextBlock
+                                                Visibility="{Binding Status,Converter={StaticResource StringLengthVisibleConverter}}"
+                                                Text="{Binding Status}"
+                                                />
                                         </Grid>
                                     </Grid>
                                 </Border>

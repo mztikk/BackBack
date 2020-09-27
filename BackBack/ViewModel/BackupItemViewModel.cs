@@ -71,6 +71,14 @@ namespace BackBack.ViewModel
             set { _running = value; NotifyOfPropertyChange(); }
         }
 
+
+        private string _status;
+        public string Status
+        {
+            get => _status;
+            set { _status = value; NotifyOfPropertyChange(); }
+        }
+
         private readonly object _locker = new object();
 
         public void Backup()
@@ -83,6 +91,7 @@ namespace BackBack.ViewModel
             lock (_locker)
             {
                 Running = true;
+                Status = "Running";
 
                 Task.Run(() =>
                 {
@@ -90,16 +99,20 @@ namespace BackBack.ViewModel
                     {
                         if (Directory.Exists(Source))
                         {
+                            Status = $"Backing up Directory '{Source}'";
                             BackupDir();
                         }
                         else if (File.Exists(Source))
                         {
+                            Status = $"Backing up File '{Source}'";
                             BackupFile();
                         }
                     }
                     finally
                     {
                         Running = false;
+                        Status = "Finished";
+                        Task.Delay(5000).ContinueWith((_) => { if (Status == "Finished") { Status = string.Empty; } });
                     }
                 });
             }

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using BackBack.Settings;
 using RF.WPF.MVVM;
 using RF.WPF.Navigation;
+using RF.WPF.UI.Interaction;
 using Stylet;
 using StyletIoC;
 
@@ -54,15 +55,15 @@ namespace BackBack.ViewModel
 
         public void RemoveItem(BackupItemViewModel backupItem)
         {
-            BackupItems.Remove(backupItem);
-            _backupData.Data.Remove(backupItem.Name);
-            _backupData.Save();
+            if (_navigationService.GetConfirmation("DELETE", $"Are you sure you want to delete '{backupItem.Name}'?") == ConfirmationResult.Affirmative)
+            {
+                BackupItems.Remove(backupItem);
+                _backupData.Data.Remove(backupItem.Name);
+                _backupData.Save();
+            }
         }
 
-        public void OpenSettings()
-        {
-            _navigationService.NavigateTo<SettingsViewModel>();
-        }
+        public void OpenSettings() => _navigationService.NavigateTo<SettingsViewModel>();
     }
 
     public class BackupItem
