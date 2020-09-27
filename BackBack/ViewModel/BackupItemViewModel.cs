@@ -121,9 +121,7 @@ namespace BackBack.ViewModel
                         }
 
                         using Lua lua = _luaCreator.Invoke();
-                        lua.SetValue("source", Source);
-                        lua.SetValue("destination", Destination);
-                        lua.SetValue("name", Name);
+                        lua.SetValuesFromBackupItem(BackupItem);
                         lua.Run(PostCompletionScript);
                     }
                     finally

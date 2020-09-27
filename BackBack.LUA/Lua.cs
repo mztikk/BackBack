@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using BackBack.Models;
 using BackBack.Storage.Settings;
+using RFReborn.Files;
 
 namespace BackBack.LUA
 {
@@ -28,6 +31,19 @@ namespace BackBack.LUA
             NLua["storageDir"] = _settings.GetStorageDir();
 
             NLua.RegisterFunction(nameof(Timestamp), GetStaticMethod(nameof(Timestamp)));
+            NLua.RegisterFunction("Zip", GetStaticMethod(typeof(LuaZip), "Zip"));
+            //NLua.RegisterFunction("CombinePath", GetStaticMethods(typeof(Path), "Combine").FirstOrDefault(x => x.GetParameters().Any(y => y.para)));
+            foreach (var item in GetStaticMethods(typeof(Path), "Combine"))
+            {
+                var p = item.GetParameters();
+                if (p.Any(x => x.ParameterType == typeof(string[])))
+                {
+                    NLua.RegisterFunction("CombinePath", item);
+                    break;
+                }
+            }
+
+            NLua.RegisterFunction("GetNormalPath", GetStaticMethod(typeof(FileUtils), "GetNormalPath"));
 
             // nasty overload handling
             NLua.RegisterFunction("debugwrite",
@@ -35,6 +51,13 @@ namespace BackBack.LUA
                 .FirstOrDefault(
                     x => x.GetParameters()
                     .Where(y => y.ParameterType == typeof(string)).Count() == 1));
+        }
+
+        public void SetValuesFromBackupItem(BackupItem backupItem)
+        {
+            SetValue("source", backupItem.Source);
+            SetValue("destination", backupItem.Destination);
+            SetValue("name", backupItem.Name);
         }
 
         public void SetValue(string name, object value) => NLua[name] = value;
