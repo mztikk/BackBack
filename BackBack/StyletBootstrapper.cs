@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using BackBack.ViewModel;
 using Stylet;
 using StyletIoC;

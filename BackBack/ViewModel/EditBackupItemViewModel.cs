@@ -60,6 +60,14 @@ namespace BackBack.ViewModel
             set { _ignores = value; NotifyOfPropertyChange(); }
         }
 
+
+        private string _onCompletionScript;
+        public string OnCompletionScript
+        {
+            get => _onCompletionScript;
+            set { _onCompletionScript = value; NotifyOfPropertyChange(); }
+        }
+
         public void Save()
         {
             BackupItem.Source = Source;

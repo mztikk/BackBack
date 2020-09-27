@@ -30,52 +30,86 @@
                 <Thickness x:Key="PanelMargin">4</Thickness>
             </Grid.Resources>
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-
-            <StackPanel Grid.Row="0">
-                <StackPanel Margin="{StaticResource PanelMargin}">
-                    <TextBlock
-                    Style="{DynamicResource TextLabel}"
-                    Text="Name"/>
-                    <TextBox Style="{DynamicResource TextEntry}" Text="{Binding Name}" IsReadOnly="True"/>
-                </StackPanel>
-
-                <StackPanel Margin="{StaticResource PanelMargin}">
-                    <TextBlock
-                    Style="{DynamicResource TextLabel}"
-                    Text="Source"/>
-                    <TextBox Style="{DynamicResource TextEntry}" Text="{Binding Source, UpdateSourceTrigger=PropertyChanged}"/>
-                </StackPanel>
-
-                <StackPanel Margin="{StaticResource PanelMargin}">
-                    <TextBlock
-                    Style="{DynamicResource TextLabel}"
-                    Text="Destination"/>
-                    <TextBox Style="{DynamicResource TextEntry}" Text="{Binding Destination, UpdateSourceTrigger=PropertyChanged}"/>
-                </StackPanel>
-            </StackPanel>
-
-            <Grid Grid.Row="1" Margin="{StaticResource PanelMargin}">
+            <TabControl
+                Style="{DynamicResource Tab}">
+                <TabItem
+                    Style="{DynamicResource TabHeader}"
+                    Header="Backup Settings">
+            
+            <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock
+                <StackPanel Grid.Row="0">
+                    <StackPanel Margin="{StaticResource PanelMargin}">
+                        <TextBlock
+                    Style="{DynamicResource TextLabel}"
+                    Text="Name"/>
+                        <TextBox Style="{DynamicResource TextEntry}" Text="{Binding Name}" IsReadOnly="True"/>
+                    </StackPanel>
+
+                    <StackPanel Margin="{StaticResource PanelMargin}">
+                        <TextBlock
+                    Style="{DynamicResource TextLabel}"
+                    Text="Source"/>
+                        <TextBox Style="{DynamicResource TextEntry}" Text="{Binding Source, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+
+                    <StackPanel Margin="{StaticResource PanelMargin}">
+                        <TextBlock
+                    Style="{DynamicResource TextLabel}"
+                    Text="Destination"/>
+                        <TextBox Style="{DynamicResource TextEntry}" Text="{Binding Destination, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <Grid Grid.Row="1" Margin="{StaticResource PanelMargin}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
                     Grid.Row="0"
                     Style="{DynamicResource TextLabel}"
                     Text="Ignores"/>
-                <TextBox
+                    <TextBox
                     Grid.Row="1"
                     Style="{DynamicResource TextEntry}"
                     AcceptsReturn="True"
                     VerticalScrollBarVisibility="Auto"
                     HorizontalScrollBarVisibility="Auto"
                     Text="{Binding Ignores, UpdateSourceTrigger=PropertyChanged}"/>
+                </Grid>
             </Grid>
+                </TabItem>
+                <TabItem
+                    Style="{DynamicResource TabHeader}"
+                    Header="On Completion Script"
+                    >
+                    
+                    <Grid Margin="{StaticResource PanelMargin}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock
+                    Grid.Row="0"
+                    Style="{DynamicResource TextLabel}"
+                    Text="Script"/>
+                        <TextBox
+                    Grid.Row="1"
+                    Style="{DynamicResource TextEntry}"
+                    AcceptsReturn="True"
+                    VerticalScrollBarVisibility="Auto"
+                    HorizontalScrollBarVisibility="Auto"
+                    Text="{Binding OnCompletionScript, UpdateSourceTrigger=PropertyChanged}"/>
+                    </Grid>
+                </TabItem>
+            </TabControl>
         </Grid>
 
         <StackPanel Grid.Row="2"

@@ -55,7 +55,7 @@ namespace BackBack.ViewModel
 
         public void RemoveItem(BackupItemViewModel backupItem)
         {
-            if (_navigationService.GetConfirmation("DELETE", $"Are you sure you want to delete '{backupItem.Name}'?") == ConfirmationResult.Affirmative)
+            if (_navigationService.GetConfirmation("DELETE", $"Are you sure you want to delete '{backupItem.Name}'?", ConfirmationButtonInfo.NoDelete) == ConfirmationResult.Affirmative)
             {
                 BackupItems.Remove(backupItem);
                 _backupData.Data.Remove(backupItem.Name);
