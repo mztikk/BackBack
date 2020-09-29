@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using BackBack.LUA;
 using BackBack.Models;
+using BackBack.Models.Events;
 using RF.WPF.MVVM;
+using RF.WPF.Navigation;
 using RFReborn.Extensions;
 using RFReborn.Files;
 using RFReborn.Files.FileCollector;
@@ -15,20 +17,25 @@ using Stylet;
 
 namespace BackBack.ViewModel
 {
-    public class BackupItemViewModel : PropertyChangedBase
+    public class BackupItemViewModel : ViewModelBase, IHandle<PostBackupEvent>
     {
-        public readonly BackupItem BackupItem;
         private readonly Func<Lua> _luaCreator;
 
-        public BackupItemViewModel(BackupItem backupItem, Func<Lua> luaCreator)
+        public BackupItemViewModel(INavigationService navigationService, Func<Lua> luaCreator) : base(navigationService)
         {
-            BackupItem = backupItem;
             _luaCreator = luaCreator;
-
-            PropertySync.Sync(BackupItem, this, null);
 
             BackupCommand = new Command(Backup);
         }
+
+        public override void OnNavigatedTo()
+        {
+            base.OnNavigatedTo();
+
+            PropertySync.Sync(BackupItem, this, null);
+        }
+
+        public BackupItem BackupItem { get; set; }
 
         private ICommand _backupCommand;
 
@@ -183,6 +190,7 @@ namespace BackBack.ViewModel
                     }
                     finally
                     {
+                        BackupItem.LastExecution = DateTime.Now;
                         Running = false;
                         Status = "Finished";
                         Task.Delay(5000).ContinueWith((_) => { if (Status == "Finished") { Status = string.Empty; } });
@@ -243,5 +251,7 @@ namespace BackBack.ViewModel
             //    }
             //});
         }
+
+        public void Handle(PostBackupEvent message) => throw new NotImplementedException();
     }
 }

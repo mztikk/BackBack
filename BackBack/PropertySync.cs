@@ -18,7 +18,10 @@ namespace BackBack
                 }
 
                 PropertyInfo targetProperty = targetT.GetProperty(property.Name, BindingFlags.Instance | BindingFlags.Public);
-                targetProperty?.SetValue(target, property.GetValue(source));
+                if (targetProperty?.SetMethod is { })
+                {
+                    targetProperty?.SetValue(target, property.GetValue(source));
+                }
             }
         }
 

@@ -27,8 +27,17 @@ namespace BackBack.ViewModel
             BackupItems.Clear();
             foreach (KeyValuePair<string, BackupItem> item in _backupData.Data)
             {
-                BackupItems.Add(new BackupItemViewModel(item.Value, luaCreator));
+                BackupItems.Add(GetBackupItemViewModel(item.Value));
             }
+        }
+
+        private BackupItemViewModel GetBackupItemViewModel(BackupItem backupItem)
+        {
+            BackupItemViewModel backupItemVM = _container.Get<BackupItemViewModel>();
+            backupItemVM.BackupItem = backupItem;
+            backupItemVM.OnNavigatedTo();
+
+            return backupItemVM;
         }
 
         private BindableCollection<BackupItemViewModel> _backupItems = new BindableCollection<BackupItemViewModel>();
@@ -50,9 +59,9 @@ namespace BackBack.ViewModel
         {
             AddBackupItemViewModel vm = _container.Get<AddBackupItemViewModel>();
             _navigationService.NavigateTo(vm);
-            if (vm.BackupItem is { })
+            if (vm.Name is { } && _backupData.Data.ContainsKey(vm.Name))
             {
-                BackupItems.Add(vm.BackupItem);
+                BackupItems.Add(GetBackupItemViewModel(_backupData.Data[vm.Name]));
             }
         }
 
