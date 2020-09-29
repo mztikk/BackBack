@@ -256,9 +256,6 @@ namespace BackBack.ViewModel
             //});
         }
 
-        public void Handle(PostBackupEvent message)
-        {
-            Debug.WriteLine(message.Name);
-        }
+        public void Handle(PostBackupEvent message) => Debug.WriteLine(message.Name);
     }
 }

@@ -33,9 +33,9 @@ namespace BackBack.LUA
             NLua.RegisterFunction(nameof(Timestamp), GetStaticMethod(nameof(Timestamp)));
             NLua.RegisterFunction("Zip", GetStaticMethod(typeof(LuaZip), "Zip"));
             //NLua.RegisterFunction("CombinePath", GetStaticMethods(typeof(Path), "Combine").FirstOrDefault(x => x.GetParameters().Any(y => y.para)));
-            foreach (var item in GetStaticMethods(typeof(Path), "Combine"))
+            foreach (MethodInfo item in GetStaticMethods(typeof(Path), "Combine"))
             {
-                var p = item.GetParameters();
+                ParameterInfo[] p = item.GetParameters();
                 if (p.Any(x => x.ParameterType == typeof(string[])))
                 {
                     NLua.RegisterFunction("CombinePath", item);

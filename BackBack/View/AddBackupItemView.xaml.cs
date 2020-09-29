@@ -1,4 +1,3 @@
-using System.Windows;
 using BackBack.ViewModel;
 using RF.WPF.MVVM;
 
@@ -9,9 +8,6 @@ namespace BackBack.View
     /// </summary>
     public partial class AddBackupItemView : ViewBase<AddBackupItemViewModel>
     {
-        public AddBackupItemView()
-        {
-            InitializeComponent();
-        }
+        public AddBackupItemView() => InitializeComponent();
     }
 }
