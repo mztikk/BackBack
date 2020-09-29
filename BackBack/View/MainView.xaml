@@ -9,8 +9,6 @@
         xmlns:vm="clr-namespace:BackBack.ViewModel"
         xmlns:v="clr-namespace:BackBack.View"
         x:TypeArguments="vm:MainViewModel"
-        mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance vm:MainViewModel}"
         Title="{Binding Title}"
         Style="{DynamicResource RF.Window}"
         >

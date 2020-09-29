@@ -20,12 +20,14 @@ namespace BackBack.ViewModel
     public class BackupItemViewModel : ViewModelBase, IHandle<PostBackupEvent>
     {
         private readonly Func<Lua> _luaCreator;
+        private readonly IEventAggregator _eventAggregator;
 
-        public BackupItemViewModel(INavigationService navigationService, Func<Lua> luaCreator) : base(navigationService)
+        public BackupItemViewModel(INavigationService navigationService, Func<Lua> luaCreator, IEventAggregator eventAggregator) : base(navigationService)
         {
             _luaCreator = luaCreator;
-
+            _eventAggregator = eventAggregator;
             BackupCommand = new Command(Backup);
+            eventAggregator.Subscribe(this);
         }
 
         public override void OnNavigatedTo()
@@ -194,6 +196,8 @@ namespace BackBack.ViewModel
                         Running = false;
                         Status = "Finished";
                         Task.Delay(5000).ContinueWith((_) => { if (Status == "Finished") { Status = string.Empty; } });
+
+                        _eventAggregator.Publish(new PostBackupEvent(BackupItem));
                     }
                 });
             }
@@ -252,6 +256,9 @@ namespace BackBack.ViewModel
             //});
         }
 
-        public void Handle(PostBackupEvent message) => throw new NotImplementedException();
+        public void Handle(PostBackupEvent message)
+        {
+            Debug.WriteLine(message.Name);
+        }
     }
 }

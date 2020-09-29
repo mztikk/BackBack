@@ -9,7 +9,7 @@ namespace BackBack.View
     /// </summary>
     public partial class EditBackupItemView : ViewBase<EditBackupItemViewModel>
     {
-        public EditBackupItemView(EditBackupItemViewModel viewModel) : base(viewModel)
+        public EditBackupItemView()
         {
             InitializeComponent();
         }

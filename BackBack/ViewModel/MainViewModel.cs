@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using BackBack.LUA;
 using BackBack.Models;
 using BackBack.Storage.Settings;
 using RF.WPF.MVVM;
@@ -15,15 +13,13 @@ namespace BackBack.ViewModel
     {
         private readonly IContainer _container;
         private readonly BackupData _backupData;
-        private readonly Func<Lua> _luaCreator;
 
-        public MainViewModel(IContainer container, INavigationService navigationService, BackupData backupData, Func<Lua> luaCreator) : base(navigationService)
+        public MainViewModel(IContainer container, INavigationService navigationService, BackupData backupData) : base(navigationService)
         {
             Title = ApplicationInfo.s_appName;
 
             _container = container;
             _backupData = backupData;
-            _luaCreator = luaCreator;
             BackupItems.Clear();
             foreach (KeyValuePair<string, BackupItem> item in _backupData.Data)
             {

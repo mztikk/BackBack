@@ -9,7 +9,7 @@ namespace BackBack.View
     /// </summary>
     public partial class MainView : ViewBase<MainViewModel>
     {
-        public MainView(MainViewModel viewModel) : base(viewModel)
+        public MainView()
         {
             InitializeComponent();
         }

@@ -9,7 +9,7 @@ namespace BackBack.View
     /// </summary>
     public partial class SettingsView : ViewBase<SettingsViewModel>
     {
-        public SettingsView(SettingsViewModel viewModel) : base(viewModel)
+        public SettingsView()
         {
             InitializeComponent();
         }
