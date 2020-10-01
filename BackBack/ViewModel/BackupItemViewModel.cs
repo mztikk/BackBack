@@ -219,6 +219,7 @@ namespace BackBack.ViewModel
                     {
                         _logger.LogInformation("Backup source is a file");
                         Status = $"Backing up File '{Source}'";
+                        _logger.LogTrace("Copying file: '{file}' to '{targetfile}'", Source, Destination);
                         FileUtils.Copy(new FileInfo(Source), new FileInfo(Destination));
                     }
 
@@ -229,6 +230,7 @@ namespace BackBack.ViewModel
                         string timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
                         string zipFile = Path.ChangeExtension(Path.Combine(ZipFileDestination, $"{Name}_{timestamp}"), "zip");
                         _logger.LogDebug("Target zip file is '{file}'", zipFile);
+                        _logger.LogInformation("Creating zip file: '{file}'", zipFile);
                         LuaZip.Zip(Destination, zipFile);
 
                         if (LimitArchives)
@@ -240,25 +242,34 @@ namespace BackBack.ViewModel
                                 string fileName = Path.GetFileName(file);
                                 if (fileName.StartsWith(Name) && fileName.EndsWith("zip"))
                                 {
+                                    _logger.LogTrace("Found archive: '{archive}'", file);
                                     archives.Add(file);
                                 }
                             }
+                            _logger.LogInformation("Found {number} archives", archives.Count);
 
                             archives.Sort();
 
                             if (archives.Count > NumberOfArchives)
                             {
                                 int diff = (int)(archives.Count - NumberOfArchives);
+                                _logger.LogInformation("{number} over the limit of {number} archives", diff, NumberOfArchives);
                                 for (int i = 0; i < diff; i++)
                                 {
-                                    File.Delete(archives[i]);
+                                    string toDelete = archives[i];
+                                    _logger.LogInformation("Deleting '{file}'", toDelete);
+                                    File.Delete(toDelete);
                                 }
                             }
                         }
                     }
 
+                    _logger.LogDebug("Creating lua engine");
                     using Lua lua = _luaCreator.Invoke();
+                    _logger.LogDebug("Setting values for {type}: {name}", BackupItem.GetType().ToString(), BackupItem.Name);
                     lua.SetValuesFromBackupItem(BackupItem);
+                    _logger.LogTrace("PostCompletionScript is: {script}", PostCompletionScript);
+                    _logger.LogDebug("Running {name}", nameof(PostCompletionScript));
                     lua.Run(PostCompletionScript);
                 }
                 finally
