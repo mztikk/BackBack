@@ -9,12 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.8" />
     <PackageReference Include="Stylet" Version="1.3.4.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\RF.WPF\RF.WPF\RF.WPF.csproj" />
-    <ProjectReference Include="..\..\RFReborn\RFReborn\RFReborn.csproj" />
+    <ProjectReference Include="..\..\RLog\RLog\RLog.csproj" />
     <ProjectReference Include="..\BackBack.LUA\BackBack.LUA.csproj" />
     <ProjectReference Include="..\BackBack.Models\BackBack.Models.csproj" />
     <ProjectReference Include="..\BackBack.Storage\BackBack.Storage.csproj" />

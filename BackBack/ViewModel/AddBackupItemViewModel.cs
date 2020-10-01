@@ -1,5 +1,7 @@
+using System;
 using BackBack.Models;
 using BackBack.Storage.Settings;
+using Microsoft.Extensions.Logging;
 using RF.WPF.MVVM;
 using RF.WPF.Navigation;
 
@@ -7,11 +9,14 @@ namespace BackBack.ViewModel
 {
     public class AddBackupItemViewModel : ViewModelBase
     {
+        private readonly ILogger _logger;
         private readonly BackupData _backupData;
 
-        public AddBackupItemViewModel(INavigationService navigationService, BackupData backupData) : base(navigationService)
+        public AddBackupItemViewModel(INavigationService navigationService, BackupData backupData, Func<Type, ILogger> loggerFactory) : base(navigationService)
         {
             Title = "Add New";
+
+            _logger = loggerFactory(typeof(AddBackupItemViewModel));
 
             _backupData = backupData;
         }
@@ -51,33 +56,34 @@ namespace BackBack.ViewModel
 
         public void Save()
         {
+            _logger.LogDebug("Saving");
+
             if (string.IsNullOrWhiteSpace(Name))
             {
+                _logger.LogInformation("Name is null or whitespace");
                 return;
             }
 
             if (_backupData.Data.ContainsKey(Name))
             {
+                _logger.LogInformation("Item with name: '{name}' already exists", Name);
                 return;
             }
 
+            _logger.LogDebug("Creating new {type} with name: '{name}'", typeof(BackupItem), Name);
             var backupItem = new BackupItem { Name = Name, Source = Source, Destination = Destination, Ignores = Ignores };
+            _logger.LogDebug("Updating {type} with '{name}'", _backupData.GetType().ToString(), Name);
             _backupData.Data[Name] = backupItem;
             _backupData.Save();
 
-            //BackupItem.Source = Source;
-            //BackupItem.Destination = Destination;
-            //BackupItem.Ignores = Ignores;
-
-            //BackupItem.BackupItem.Source = Source;
-            //BackupItem.BackupItem.Destination = Destination;
-            //BackupItem.BackupItem.Ignores = Ignores;
-
-            //_backupData.Data[Name] = BackupItem.BackupItem;
-
+            _logger.LogTrace("Navigating back");
             NavigateBack();
         }
 
-        public void Cancel() => NavigateBack();
+        public void Cancel()
+        {
+            _logger.LogDebug("Canceling and navigating back");
+            NavigateBack();
+        }
     }
 }

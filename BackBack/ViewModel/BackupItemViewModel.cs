@@ -7,26 +7,35 @@ using System.Windows.Input;
 using BackBack.LUA;
 using BackBack.Models;
 using BackBack.Models.Events;
+using Microsoft.Extensions.Logging;
+using RF.WPF;
 using RF.WPF.MVVM;
 using RF.WPF.Navigation;
 using RFReborn.Extensions;
 using RFReborn.Files;
 using RFReborn.Files.FileCollector;
 using RFReborn.Files.FileCollector.Modules;
+using RFReborn.Routines;
 using Stylet;
 
 namespace BackBack.ViewModel
 {
-    public class BackupItemViewModel : ViewModelBase, IHandle<PostBackupEvent>
+    public class BackupItemViewModel : ViewModelBase, IHandle<PostBackupEvent>, IHandle<TickEvent>, IDisposable
     {
+        private readonly ILogger _logger;
         private readonly Func<Lua> _luaCreator;
         private readonly IEventAggregator _eventAggregator;
 
-        public BackupItemViewModel(INavigationService navigationService, Func<Lua> luaCreator, IEventAggregator eventAggregator) : base(navigationService)
+        private RoutineBase? _routine = null;
+
+        public BackupItemViewModel(INavigationService navigationService, Func<Lua> luaCreator, IEventAggregator eventAggregator, Func<Type, ILogger> loggerFactory) : base(navigationService)
         {
+            _logger = loggerFactory(typeof(BackupItemViewModel));
             _luaCreator = luaCreator;
             _eventAggregator = eventAggregator;
-            BackupCommand = new Command(Backup);
+            BackupCommand = new AsyncCommand(BackupAsync);
+
+            _logger.LogDebug("Subscribing to {type}", eventAggregator.GetType().ToString());
             eventAggregator.Subscribe(this);
         }
 
@@ -34,6 +43,7 @@ namespace BackBack.ViewModel
         {
             base.OnNavigatedTo();
 
+            _logger.LogDebug("Syncing Properties with {type}: '{name}'", BackupItem.GetType().ToString(), BackupItem.Name);
             PropertySync.Sync(BackupItem, this, null);
         }
 
@@ -125,12 +135,27 @@ namespace BackBack.ViewModel
             set { _status = value; NotifyOfPropertyChange(); }
         }
 
+        private TimeSpan _interval;
+        private bool _disposedValue;
+
+        public TimeSpan Interval
+        {
+            get => _interval;
+            set { _interval = value; NotifyOfPropertyChange(); _routine = new GenericRoutine(value, BackupAsync); }
+        }
+
         private readonly object _locker = new object();
+
+        public async Task BackupAsync() => await Task.Run(Backup);
 
         public void Backup()
         {
+            using IDisposable scope = _logger.BeginScope($"{Name}: ");
+            _logger.LogDebug("Starting backup of '{name}'", Name);
+
             if (Running)
             {
+                _logger.LogInformation("'{name}' already running", Name);
                 return;
             }
 
@@ -139,67 +164,112 @@ namespace BackBack.ViewModel
                 Running = true;
                 Status = "Running";
 
-                Task.Run(() =>
+                try
                 {
-                    try
+                    if (Directory.Exists(Source))
                     {
-                        if (Directory.Exists(Source))
+                        _logger.LogInformation("Backup source is a directory");
+                        Status = $"Backing up Directory '{Source}'";
+
+                        var basePath = new DirectoryInfo(Source);
+                        var target = new DirectoryInfo(Destination);
+
+                        _logger.LogDebug("Backing up from '{source}' to '{target}'", basePath, target);
+
+                        var collectedFiles = new HashSet<string>();
+
+                        var collector = new FileCollector();
+                        if (Ignores is { })
                         {
-                            Status = $"Backing up Directory '{Source}'";
-                            BackupDir();
-                        }
-                        else if (File.Exists(Source))
-                        {
-                            Status = $"Backing up File '{Source}'";
-                            BackupFile();
+                            _logger.LogTrace("Adding ignores: {ignores}", Ignores);
+                            collector.AddListModule(Ignores.GetLines().SkipEmpty());
                         }
 
-                        if (ZipFiles)
+                        Parallel.ForEach(collector.EnumerateFiles(Source), (file) =>
                         {
-                            string timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
-                            string zipFile = Path.ChangeExtension(Path.Combine(ZipFileDestination, $"{Name}_{timestamp}"), "zip");
-                            Debug.WriteLine(zipFile);
-                            LuaZip.Zip(Destination, zipFile);
-
-                            if (LimitArchives)
+                            if (file is null)
                             {
-                                var archives = new List<string>();
-                                foreach (string file in FileUtils.GetFiles(ZipFileDestination, null))
+                                _logger.LogWarning("Enumerated file is null");
+                                return;
+                            }
+
+                            _logger.LogTrace("Copying file: '{file}'", file);
+
+                            string newFile = FileUtils.MakePath(basePath, target, file);
+                            if (newFile is null)
+                            {
+                                _logger.LogError("Target of file: '{file}' is null", file);
+                                return;
+                            }
+
+                            _logger.LogTrace("Target is '{file}'", newFile);
+
+                            collectedFiles.Add(newFile);
+                            if (File.Exists(newFile) && FileUtils.AreEqual(file, newFile))
+                            {
+                                _logger.LogInformation("File: '{file}' already exists and is equal", newFile);
+                                return;
+                            }
+
+                            _logger.LogTrace("Copying file: '{file}' to '{targetfile}'", file, newFile);
+                            FileUtils.Copy(basePath, target, new FileInfo(file), true);
+                        });
+                    }
+                    else if (File.Exists(Source))
+                    {
+                        _logger.LogInformation("Backup source is a file");
+                        Status = $"Backing up File '{Source}'";
+                        FileUtils.Copy(new FileInfo(Source), new FileInfo(Destination));
+                    }
+
+                    if (ZipFiles)
+                    {
+                        _logger.LogDebug("Zipping of backup target enabled");
+
+                        string timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
+                        string zipFile = Path.ChangeExtension(Path.Combine(ZipFileDestination, $"{Name}_{timestamp}"), "zip");
+                        _logger.LogDebug("Target zip file is '{file}'", zipFile);
+                        LuaZip.Zip(Destination, zipFile);
+
+                        if (LimitArchives)
+                        {
+                            _logger.LogInformation("Number of archives is limited to: {number}", NumberOfArchives);
+                            var archives = new List<string>();
+                            foreach (string file in FileUtils.GetFiles(ZipFileDestination, null))
+                            {
+                                string fileName = Path.GetFileName(file);
+                                if (fileName.StartsWith(Name) && fileName.EndsWith("zip"))
                                 {
-                                    string fileName = Path.GetFileName(file);
-                                    if (fileName.StartsWith(Name) && fileName.EndsWith("zip"))
-                                    {
-                                        archives.Add(file);
-                                    }
+                                    archives.Add(file);
                                 }
+                            }
 
-                                archives.Sort();
+                            archives.Sort();
 
-                                if (archives.Count > NumberOfArchives)
+                            if (archives.Count > NumberOfArchives)
+                            {
+                                int diff = (int)(archives.Count - NumberOfArchives);
+                                for (int i = 0; i < diff; i++)
                                 {
-                                    int diff = (int)(archives.Count - NumberOfArchives);
-                                    for (int i = 0; i < diff; i++)
-                                    {
-                                        File.Delete(archives[i]);
-                                    }
+                                    File.Delete(archives[i]);
                                 }
                             }
                         }
-
-                        using Lua lua = _luaCreator.Invoke();
-                        lua.SetValuesFromBackupItem(BackupItem);
-                        lua.Run(PostCompletionScript);
                     }
-                    finally
-                    {
-                        BackupItem.LastExecution = DateTime.Now;
-                        Running = false;
-                        Status = "Finished";
-                        Task.Delay(5000).ContinueWith((_) => { if (Status == "Finished") { Status = string.Empty; } });
 
-                        _eventAggregator.Publish(new PostBackupEvent(BackupItem));
-                    }
-                });
+                    using Lua lua = _luaCreator.Invoke();
+                    lua.SetValuesFromBackupItem(BackupItem);
+                    lua.Run(PostCompletionScript);
+                }
+                finally
+                {
+                    BackupItem.LastExecution = DateTime.Now;
+                    Running = false;
+                    Status = "Finished";
+                    Task.Delay(5000).ContinueWith((_) => { if (Status == "Finished") { Status = string.Empty; } });
+
+                    _eventAggregator.Publish(new PostBackupEvent(BackupItem));
+                }
             }
         }
 
@@ -219,31 +289,26 @@ namespace BackBack.ViewModel
             }
 
             Parallel.ForEach(collector.EnumerateFiles(Source), (file) =>
-            //foreach (string file in collector.EnumerateFiles(Source))
             {
                 if (file is null)
                 {
                     return;
-                    //continue;
                 }
 
                 string newFile = FileUtils.MakePath(basePath, target, file);
                 if (newFile is null)
                 {
                     return;
-                    //continue;
                 }
 
                 collectedFiles.Add(newFile);
                 if (File.Exists(newFile) && FileUtils.AreEqual(file, newFile))
                 {
                     return;
-                    //continue;
                 }
 
                 Debug.WriteLine($"{file} -> {newFile}");
                 FileUtils.Copy(basePath, target, new FileInfo(file), true);
-                //}
             });
 
             //Parallel.ForEach(FileUtils.Walk(target.FullName, FileSystemEnumeration.FilesOnly), (file) =>
@@ -257,5 +322,36 @@ namespace BackBack.ViewModel
         }
 
         public void Handle(PostBackupEvent message) => Debug.WriteLine(message.Name);
+        public void Handle(TickEvent message) => Debug.WriteLine(message.Time + ": " + Name);
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: dispose managed state (managed objects)
+                    _eventAggregator.Unsubscribe(this);
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+                // TODO: set large fields to null
+                _disposedValue = true;
+            }
+        }
+
+        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        // ~BackupItemViewModel()
+        // {
+        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        //     Dispose(disposing: false);
+        // }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
     }
 }

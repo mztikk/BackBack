@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using BackBack.Storage.Settings;
+using Microsoft.Extensions.Logging;
 using RF.WPF.MVVM;
 using RF.WPF.Navigation;
 
@@ -7,11 +9,14 @@ namespace BackBack.ViewModel
 {
     public class EditBackupItemViewModel : ViewModelBase
     {
+        private readonly ILogger _logger;
         private readonly BackupData _backupData;
 
-        public EditBackupItemViewModel(INavigationService navigationService, BackupData backupData) : base(navigationService)
+        public EditBackupItemViewModel(INavigationService navigationService, BackupData backupData, Func<Type, ILogger> loggerFactory) : base(navigationService)
         {
             Title = "Edit";
+
+            _logger = loggerFactory(typeof(EditBackupItemViewModel));
 
             _backupData = backupData;
         }
@@ -24,6 +29,7 @@ namespace BackBack.ViewModel
 
             var ignores = new HashSet<string> { "BackupItem" };
 
+            _logger.LogDebug("Syncing Properties with {type}: '{name}'", BackupItem.GetType().ToString(), BackupItem.Name);
             PropertySync.Sync(BackupItem, this, ignores);
 
             Title = $"Edit '{Name}'";
@@ -98,17 +104,27 @@ namespace BackBack.ViewModel
 
         public void Save()
         {
+            _logger.LogDebug("Saving {type}", BackupItem.GetType().ToString());
+
             var ignores = new HashSet<string> { "BackupItem" };
 
+            _logger.LogDebug("Syncing Properties back to {type}", BackupItem.GetType().ToString());
             PropertySync.Sync(this, BackupItem, ignores);
+            _logger.LogDebug("Syncing Properties back to {type}", BackupItem.BackupItem.GetType().ToString());
             PropertySync.Sync(this, BackupItem.BackupItem, ignores);
 
+            _logger.LogDebug("Updating {type} with '{name}'", _backupData.GetType().ToString(), Name);
             _backupData.Data[Name] = BackupItem.BackupItem;
             _backupData.Save();
 
+            _logger.LogTrace("Navigating back");
             NavigateBack();
         }
 
-        public void Cancel() => NavigateBack();
+        public void Cancel()
+        {
+            _logger.LogDebug("Canceling and navigating back");
+            NavigateBack();
+        }
     }
 }

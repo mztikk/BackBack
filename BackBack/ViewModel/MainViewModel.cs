@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using BackBack.Models;
 using BackBack.Storage.Settings;
+using Microsoft.Extensions.Logging;
 using RF.WPF.MVVM;
 using RF.WPF.Navigation;
 using RF.WPF.UI.Interaction;
@@ -11,12 +13,15 @@ namespace BackBack.ViewModel
 {
     public class MainViewModel : ViewModelBase
     {
+        private readonly ILogger _logger;
         private readonly IContainer _container;
         private readonly BackupData _backupData;
 
-        public MainViewModel(IContainer container, INavigationService navigationService, BackupData backupData) : base(navigationService)
+        public MainViewModel(IContainer container, INavigationService navigationService, BackupData backupData, Func<Type, ILogger> loggerFactory) : base(navigationService)
         {
             Title = ApplicationInfo.s_appName;
+
+            _logger = loggerFactory(typeof(MainViewModel));
 
             _container = container;
             _backupData = backupData;
@@ -29,6 +34,7 @@ namespace BackBack.ViewModel
 
         private BackupItemViewModel GetBackupItemViewModel(BackupItem backupItem)
         {
+            _logger.LogDebug("Creating {backupvm} for {backupitem}: '{backupitem}'", nameof(BackupItemViewModel), nameof(BackupItem), backupItem.Name);
             BackupItemViewModel backupItemVM = _container.Get<BackupItemViewModel>();
             backupItemVM.BackupItem = backupItem;
             backupItemVM.OnNavigatedTo();
@@ -46,6 +52,7 @@ namespace BackBack.ViewModel
 
         public void EditBackupItem(BackupItemViewModel backupItemViewModel)
         {
+            _logger.LogDebug("Editing '{type}': '{name}'", backupItemViewModel.GetType().ToString(), backupItemViewModel.Name);
             EditBackupItemViewModel vm = _container.Get<EditBackupItemViewModel>();
             vm.BackupItem = backupItemViewModel;
             _navigationService.NavigateTo(vm);
@@ -53,6 +60,7 @@ namespace BackBack.ViewModel
 
         public void AddNewBackupItem()
         {
+            _logger.LogDebug("Adding new '{type}", typeof(BackupItemViewModel).ToString());
             AddBackupItemViewModel vm = _container.Get<AddBackupItemViewModel>();
             _navigationService.NavigateTo(vm);
             if (vm.Name is { } && _backupData.Data.ContainsKey(vm.Name))
@@ -65,6 +73,8 @@ namespace BackBack.ViewModel
         {
             if (_navigationService.GetConfirmation("DELETE", $"Are you sure you want to delete '{backupItem.Name}'?", ConfirmationButtonInfo.NoDelete) == ConfirmationResult.Affirmative)
             {
+                backupItem.Dispose();
+
                 BackupItems.Remove(backupItem);
                 _backupData.Data.Remove(backupItem.Name);
                 _backupData.Save();
