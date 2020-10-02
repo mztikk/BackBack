@@ -7,6 +7,7 @@ using System.Windows.Input;
 using BackBack.LUA;
 using BackBack.Models;
 using BackBack.Models.Events;
+using BackBack.Triggers;
 using Microsoft.Extensions.Logging;
 using RF.WPF;
 using RF.WPF.Extensions;
@@ -18,26 +19,32 @@ using RFReborn.Files.FileCollector;
 using RFReborn.Files.FileCollector.Modules;
 using RFReborn.Routines;
 using Stylet;
+using StyletIoC;
 
 namespace BackBack.ViewModel
 {
-    public class BackupItemViewModel : ViewModelBase, IHandle<PostBackupEvent>, IHandle<TickEvent>, IDisposable
+    public class BackupItemViewModel : ViewModelBase, IDisposable
     {
         private readonly ILogger _logger;
         private readonly Func<Lua> _luaCreator;
         private readonly IEventAggregator _eventAggregator;
-
+        private readonly IContainer _container;
         private RoutineBase? _routine = null;
 
-        public BackupItemViewModel(INavigationService navigationService, Func<Lua> luaCreator, IEventAggregator eventAggregator, Func<Type, ILogger> loggerFactory) : base(navigationService)
+        private TimedTrigger _timedTrigger;
+
+        public BackupItemViewModel(INavigationService navigationService, Func<Lua> luaCreator, IEventAggregator eventAggregator, Func<Type, ILogger> loggerFactory, IContainer container) : base(navigationService)
         {
             _logger = loggerFactory(typeof(BackupItemViewModel));
             _luaCreator = luaCreator;
             _eventAggregator = eventAggregator;
+            _container = container;
             BackupCommand = new AsyncCommand(BackupAsync);
 
-            _logger.LogDebug("Subscribing to {type}", eventAggregator.TypeName());
-            eventAggregator.Subscribe(this);
+            _timedTrigger = _container.Get<TimedTrigger>();
+            _timedTrigger.BackupItem = BackupItem;
+            _timedTrigger.Interval = TimeSpan.FromSeconds(1);
+            _timedTrigger.OnTrigger += _timedTrigger_OnTrigger;
         }
 
         public override void OnNavigatedTo()
@@ -46,7 +53,11 @@ namespace BackBack.ViewModel
 
             _logger.LogDebug("Syncing Properties with {type}: '{name}'", BackupItem.TypeName(), BackupItem.Name);
             PropertySync.Sync(BackupItem, this, null);
+
+            _timedTrigger.BackupItem = BackupItem;
         }
+
+        private void _timedTrigger_OnTrigger(object sender, TriggerEventArgs e) => Debug.WriteLine(Name);
 
         public BackupItem BackupItem { get; set; }
 
@@ -283,7 +294,7 @@ namespace BackBack.ViewModel
                     Task.Delay(5000).ContinueWith((_) => { if (Status == "Finished") { Status = string.Empty; } });
 
                     _logger.LogDebug("Publishing {type}", typeof(PostBackupEvent).ToString());
-                    _eventAggregator.Publish(new PostBackupEvent(BackupItem));
+                    _eventAggregator.Publish(new PostBackupEvent(DateTime.Now, BackupItem));
                 }
             }
         }
@@ -346,8 +357,8 @@ namespace BackBack.ViewModel
                 if (disposing)
                 {
                     // TODO: dispose managed state (managed objects)
-                    _logger.LogDebug("Unsubscribing from {type}", _eventAggregator.TypeName());
-                    _eventAggregator.Unsubscribe(this);
+
+                    _timedTrigger?.Dispose();
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override finalizer

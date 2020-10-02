@@ -21,9 +21,9 @@ namespace BackBack.Triggers
 
         public void Handle(TickEvent message)
         {
-            if (BackupItem.LastExecution - message.Time >= Interval)
+            if (message.Time - BackupItem.LastExecution >= Interval)
             {
-                Trigger(new EventArgs());
+                Trigger(new TriggerEventArgs(message.Time));
             }
         }
 

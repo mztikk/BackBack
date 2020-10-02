@@ -2,9 +2,9 @@
 
 namespace BackBack.Models.Events
 {
-    public class PostBackupEvent : EventArgs
+    public class PostBackupEvent : TimeEventArgs
     {
-        public PostBackupEvent(BackupItem backupItem)
+        public PostBackupEvent(DateTime time, BackupItem backupItem) : base(time)
         {
             BackupItem = backupItem;
             Name = backupItem.Name;

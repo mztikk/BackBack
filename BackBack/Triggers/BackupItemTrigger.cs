@@ -22,7 +22,7 @@ namespace BackBack.Triggers
         {
             if (message.BackupItem == BackupItem)
             {
-                Trigger(new EventArgs());
+                Trigger(new TriggerEventArgs(message.Time));
             }
         }
 
