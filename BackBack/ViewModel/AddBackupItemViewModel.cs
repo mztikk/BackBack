@@ -2,6 +2,7 @@ using System;
 using BackBack.Models;
 using BackBack.Storage.Settings;
 using Microsoft.Extensions.Logging;
+using RF.WPF.Extensions;
 using RF.WPF.MVVM;
 using RF.WPF.Navigation;
 
@@ -72,7 +73,7 @@ namespace BackBack.ViewModel
 
             _logger.LogDebug("Creating new {type} with name: '{name}'", typeof(BackupItem), Name);
             var backupItem = new BackupItem { Name = Name, Source = Source, Destination = Destination, Ignores = Ignores };
-            _logger.LogDebug("Updating {type} with '{name}'", _backupData.GetType().ToString(), Name);
+            _logger.LogDebug("Updating {type} with '{name}'", _backupData.TypeName(), Name);
             _backupData.Data[Name] = backupItem;
             _backupData.Save();
 

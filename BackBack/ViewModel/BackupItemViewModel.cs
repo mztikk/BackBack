@@ -9,6 +9,7 @@ using BackBack.Models;
 using BackBack.Models.Events;
 using Microsoft.Extensions.Logging;
 using RF.WPF;
+using RF.WPF.Extensions;
 using RF.WPF.MVVM;
 using RF.WPF.Navigation;
 using RFReborn.Extensions;
@@ -35,7 +36,7 @@ namespace BackBack.ViewModel
             _eventAggregator = eventAggregator;
             BackupCommand = new AsyncCommand(BackupAsync);
 
-            _logger.LogDebug("Subscribing to {type}", eventAggregator.GetType().ToString());
+            _logger.LogDebug("Subscribing to {type}", eventAggregator.TypeName());
             eventAggregator.Subscribe(this);
         }
 
@@ -43,7 +44,7 @@ namespace BackBack.ViewModel
         {
             base.OnNavigatedTo();
 
-            _logger.LogDebug("Syncing Properties with {type}: '{name}'", BackupItem.GetType().ToString(), BackupItem.Name);
+            _logger.LogDebug("Syncing Properties with {type}: '{name}'", BackupItem.TypeName(), BackupItem.Name);
             PropertySync.Sync(BackupItem, this, null);
         }
 
@@ -266,7 +267,7 @@ namespace BackBack.ViewModel
 
                     _logger.LogDebug("Creating lua engine");
                     using Lua lua = _luaCreator.Invoke();
-                    _logger.LogDebug("Setting values for {type}: {name}", BackupItem.GetType().ToString(), BackupItem.Name);
+                    _logger.LogDebug("Setting values for {type}: {name}", BackupItem.TypeName(), BackupItem.Name);
                     lua.SetValuesFromBackupItem(BackupItem);
                     _logger.LogTrace("PostCompletionScript is: {script}", PostCompletionScript);
                     _logger.LogDebug("Running {name}", nameof(PostCompletionScript));
@@ -274,11 +275,14 @@ namespace BackBack.ViewModel
                 }
                 finally
                 {
+                    _logger.LogDebug("Backup finished");
                     BackupItem.LastExecution = DateTime.Now;
+                    _logger.LogDebug("Last Execution is: {time}", BackupItem.LastExecution);
                     Running = false;
                     Status = "Finished";
                     Task.Delay(5000).ContinueWith((_) => { if (Status == "Finished") { Status = string.Empty; } });
 
+                    _logger.LogDebug("Publishing {type}", typeof(PostBackupEvent).ToString());
                     _eventAggregator.Publish(new PostBackupEvent(BackupItem));
                 }
             }
@@ -342,6 +346,7 @@ namespace BackBack.ViewModel
                 if (disposing)
                 {
                     // TODO: dispose managed state (managed objects)
+                    _logger.LogDebug("Unsubscribing from {type}", _eventAggregator.TypeName());
                     _eventAggregator.Unsubscribe(this);
                 }
 

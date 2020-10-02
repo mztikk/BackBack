@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using BackBack.Storage.Settings;
 using Microsoft.Extensions.Logging;
+using RF.WPF.Extensions;
 using RF.WPF.MVVM;
 using RF.WPF.Navigation;
 
@@ -29,7 +30,7 @@ namespace BackBack.ViewModel
 
             var ignores = new HashSet<string> { "BackupItem" };
 
-            _logger.LogDebug("Syncing Properties with {type}: '{name}'", BackupItem.GetType().ToString(), BackupItem.Name);
+            _logger.LogDebug("Syncing Properties with {type}: '{name}'", BackupItem.TypeName(), BackupItem.Name);
             PropertySync.Sync(BackupItem, this, ignores);
 
             Title = $"Edit '{Name}'";
@@ -104,16 +105,16 @@ namespace BackBack.ViewModel
 
         public void Save()
         {
-            _logger.LogDebug("Saving {type}", BackupItem.GetType().ToString());
+            _logger.LogDebug("Saving {type}", BackupItem.TypeName());
 
             var ignores = new HashSet<string> { "BackupItem" };
 
-            _logger.LogDebug("Syncing Properties back to {type}", BackupItem.GetType().ToString());
+            _logger.LogDebug("Syncing Properties back to {type}", BackupItem.TypeName());
             PropertySync.Sync(this, BackupItem, ignores);
-            _logger.LogDebug("Syncing Properties back to {type}", BackupItem.BackupItem.GetType().ToString());
+            _logger.LogDebug("Syncing Properties back to {type}", BackupItem.BackupItem.TypeName());
             PropertySync.Sync(this, BackupItem.BackupItem, ignores);
 
-            _logger.LogDebug("Updating {type} with '{name}'", _backupData.GetType().ToString(), Name);
+            _logger.LogDebug("Updating {type} with '{name}'", _backupData.TypeName(), Name);
             _backupData.Data[Name] = BackupItem.BackupItem;
             _backupData.Save();
 

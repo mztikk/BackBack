@@ -4,6 +4,7 @@ using BackBack.Storage;
 using BackBack.ViewModel;
 using Microsoft.Extensions.Logging;
 using RF.WPF;
+using RF.WPF.Extensions;
 using RLog;
 using Stylet;
 using StyletIoC;
@@ -33,7 +34,7 @@ namespace BackBack
             // Configure the IoC container in here
             foreach (StyletIoCModule item in s_iocModules)
             {
-                _logger?.LogDebug("Adding {iocmodule}: '{module}'", nameof(StyletIoCModule), item.GetType().ToString());
+                _logger?.LogDebug("Adding {iocmodule}: '{module}'", nameof(StyletIoCModule), item.TypeName());
                 builder.AddModule(item);
             }
 
@@ -47,7 +48,7 @@ namespace BackBack
             //Container.Get<StorageIoc>().Configure(Container);
             foreach (IocBase item in Container.GetAll<IocBase>())
             {
-                _logger?.LogDebug("Configuring {iocmodule}: '{module}'", nameof(IocBase), item.GetType().ToString());
+                _logger?.LogDebug("Configuring {iocmodule}: '{module}'", nameof(IocBase), item.TypeName());
                 item.Configure(Container);
             }
 

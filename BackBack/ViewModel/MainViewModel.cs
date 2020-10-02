@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using BackBack.Models;
 using BackBack.Storage.Settings;
 using Microsoft.Extensions.Logging;
+using RF.WPF.Extensions;
 using RF.WPF.MVVM;
 using RF.WPF.Navigation;
 using RF.WPF.UI.Interaction;
@@ -52,7 +53,7 @@ namespace BackBack.ViewModel
 
         public void EditBackupItem(BackupItemViewModel backupItemViewModel)
         {
-            _logger.LogDebug("Editing '{type}': '{name}'", backupItemViewModel.GetType().ToString(), backupItemViewModel.Name);
+            _logger.LogDebug("Editing '{type}': '{name}'", backupItemViewModel.TypeName(), backupItemViewModel.Name);
             EditBackupItemViewModel vm = _container.Get<EditBackupItemViewModel>();
             vm.BackupItem = backupItemViewModel;
             _navigationService.NavigateTo(vm);
