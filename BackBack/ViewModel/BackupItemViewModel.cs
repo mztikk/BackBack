@@ -7,9 +7,9 @@ using System.Windows.Input;
 using BackBack.LUA;
 using BackBack.Models;
 using BackBack.Models.Events;
+using BackBack.Storage.Settings;
 using BackBack.Triggers;
 using Microsoft.Extensions.Logging;
-using RF.WPF;
 using RF.WPF.Extensions;
 using RF.WPF.MVVM;
 using RF.WPF.Navigation;
@@ -29,22 +29,19 @@ namespace BackBack.ViewModel
         private readonly Func<Lua> _luaCreator;
         private readonly IEventAggregator _eventAggregator;
         private readonly IContainer _container;
+        private readonly BackupData _backupData;
         private RoutineBase? _routine = null;
 
-        private TimedTrigger _timedTrigger;
+        private TriggerEvent _trigger;
 
-        public BackupItemViewModel(INavigationService navigationService, Func<Lua> luaCreator, IEventAggregator eventAggregator, Func<Type, ILogger> loggerFactory, IContainer container) : base(navigationService)
+        public BackupItemViewModel(INavigationService navigationService, Func<Lua> luaCreator, IEventAggregator eventAggregator, Func<Type, ILogger> loggerFactory, IContainer container, BackupData backupData) : base(navigationService)
         {
             _logger = loggerFactory(typeof(BackupItemViewModel));
             _luaCreator = luaCreator;
             _eventAggregator = eventAggregator;
             _container = container;
+            _backupData = backupData;
             BackupCommand = new AsyncCommand(BackupAsync);
-
-            _timedTrigger = _container.Get<TimedTrigger>();
-            _timedTrigger.BackupItem = BackupItem;
-            _timedTrigger.Interval = TimeSpan.FromSeconds(1);
-            _timedTrigger.OnTrigger += _timedTrigger_OnTrigger;
         }
 
         public override void OnNavigatedTo()
@@ -53,11 +50,7 @@ namespace BackBack.ViewModel
 
             _logger.LogDebug("Syncing Properties with {type}: '{name}'", BackupItem.TypeName(), BackupItem.Name);
             PropertySync.Sync(BackupItem, this, null);
-
-            _timedTrigger.BackupItem = BackupItem;
         }
-
-        private void _timedTrigger_OnTrigger(object sender, TriggerEventArgs e) => Debug.WriteLine(Name);
 
         public BackupItem BackupItem { get; set; }
 
@@ -147,14 +140,56 @@ namespace BackBack.ViewModel
             set { _status = value; NotifyOfPropertyChange(); }
         }
 
-        private TimeSpan _interval;
-        private bool _disposedValue;
-
-        public TimeSpan Interval
+        private TriggerInfo _triggerInfo;
+        public TriggerInfo TriggerInfo
         {
-            get => _interval;
-            set { _interval = value; NotifyOfPropertyChange(); _routine = new GenericRoutine(value, BackupAsync); }
+            get => _triggerInfo;
+            set { _triggerInfo = value; NotifyOfPropertyChange(); TriggerInfoChanged(); }
         }
+
+        private void TriggerInfoChanged()
+        {
+            if (_trigger is IDisposable disposable)
+            {
+                disposable?.Dispose();
+            }
+
+            _trigger = null;
+
+            if (TriggerInfo is null)
+            {
+                return;
+            }
+
+            switch (TriggerInfo.Type)
+            {
+                case TriggerType.None:
+                    return;
+                case TriggerType.TimedTrigger:
+                    {
+                        TimedTrigger trigger = _container.Get<TimedTrigger>();
+                        _trigger = trigger;
+                        trigger.BackupItem = BackupItem;
+                        trigger.Interval = TriggerInfo.Interval;
+                    }
+                    break;
+                case TriggerType.BackupItemTrigger:
+                    {
+                        BackupItemTrigger trigger = _container.Get<BackupItemTrigger>();
+                        _trigger = trigger;
+                        trigger.BackupItem = _backupData[TriggerInfo.BackupName];
+                    }
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
+
+            _trigger.OnTrigger += Trigger_OnTrigger;
+        }
+
+        private void Trigger_OnTrigger(object sender, TriggerEventArgs e) => BackupAsync();
+
+        private bool _disposedValue;
 
         private readonly object _locker = new object();
 
@@ -282,7 +317,7 @@ namespace BackBack.ViewModel
                     lua.SetValuesFromBackupItem(BackupItem);
                     _logger.LogTrace("PostCompletionScript is: {script}", PostCompletionScript);
                     _logger.LogDebug("Running {name}", nameof(PostCompletionScript));
-                    lua.Run(PostCompletionScript);
+                    lua.Run(PostCompletionScript ?? string.Empty);
                 }
                 finally
                 {
@@ -358,7 +393,10 @@ namespace BackBack.ViewModel
                 {
                     // TODO: dispose managed state (managed objects)
 
-                    _timedTrigger?.Dispose();
+                    if (_trigger is IDisposable disposable)
+                    {
+                        disposable?.Dispose();
+                    }
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override finalizer

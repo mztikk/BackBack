@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using BackBack.Models;
 using BackBack.Storage.Settings;
 using Microsoft.Extensions.Logging;
 using RF.WPF.Extensions;
 using RF.WPF.MVVM;
 using RF.WPF.Navigation;
+using Stylet;
 
 namespace BackBack.ViewModel
 {
@@ -28,10 +30,13 @@ namespace BackBack.ViewModel
         {
             base.OnNavigatedTo();
 
+            Triggers = new BindableCollection<string> { "None", "Timed", "BackupItem" };
             var ignores = new HashSet<string> { "BackupItem" };
 
             _logger.LogDebug("Syncing Properties with {type}: '{name}'", BackupItem.TypeName(), BackupItem.Name);
             PropertySync.Sync(BackupItem, this, ignores);
+
+            BackupNames = new List<string>(_backupData.Data.Keys);
 
             Title = $"Edit '{Name}'";
         }
@@ -101,6 +106,61 @@ namespace BackBack.ViewModel
         {
             get => _limitArchives;
             set { _limitArchives = value; NotifyOfPropertyChange(); }
+        }
+
+        private TriggerInfo _triggerInfo;
+        public TriggerInfo TriggerInfo
+        {
+            get => _triggerInfo;
+            set { _triggerInfo = value; NotifyOfPropertyChange(); }
+        }
+
+        private BindableCollection<string> _triggers;
+        public BindableCollection<string> Triggers
+        {
+            get => _triggers;
+            set { _triggers = value; NotifyOfPropertyChange(); }
+        }
+
+        private bool _backupTriggerSettingsVisible;
+        public bool BackupTriggerSettingsVisible
+        {
+            get => _backupTriggerSettingsVisible;
+            set { _backupTriggerSettingsVisible = value; NotifyOfPropertyChange(); }
+        }
+
+        private bool _timedTriggerSettingsVisible;
+        public bool TimedTriggerSettingsVisible
+        {
+            get => _timedTriggerSettingsVisible;
+            set { _timedTriggerSettingsVisible = value; NotifyOfPropertyChange(); }
+        }
+
+        private IEnumerable<string> _backupNames;
+        public IEnumerable<string> BackupNames
+        {
+            get => _backupNames;
+            set { _backupNames = value; NotifyOfPropertyChange(); }
+        }
+
+        public void SelectedTrigger()
+        {
+            BackupTriggerSettingsVisible = false;
+            TimedTriggerSettingsVisible = false;
+
+            switch (TriggerInfo.Type)
+            {
+                case TriggerType.None:
+                    break;
+                case TriggerType.TimedTrigger:
+                    TimedTriggerSettingsVisible = true;
+                    break;
+                case TriggerType.BackupItemTrigger:
+                    BackupTriggerSettingsVisible = true;
+                    break;
+                default:
+                    break;
+            }
         }
 
         public void Save()

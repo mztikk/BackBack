@@ -14,8 +14,7 @@ namespace BackBack.Models
         public bool LimitArchives { get; set; }
         public double NumberOfArchives { get; set; }
         public DateTime LastExecution { get; set; }
-        public bool BackupPeriodically { get; set; }
-        public TimeSpan Interval { get; set; }
+        public TriggerInfo TriggerInfo { get; set; } = new TriggerInfo();
 
         public bool Equals(BackupItem other) => other.Name.Equals(Name);
     }

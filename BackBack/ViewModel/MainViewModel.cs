@@ -75,7 +75,15 @@ namespace BackBack.ViewModel
             if (_navigationService.GetConfirmation("DELETE", $"Are you sure you want to delete '{backupItem.Name}'?", ConfirmationButtonInfo.NoDelete) == ConfirmationResult.Affirmative)
             {
                 backupItem.Dispose();
-
+                foreach (BackupItemViewModel item in BackupItems)
+                {
+                    TriggerInfo trigger = item.BackupItem.TriggerInfo;
+                    if (trigger.Type == TriggerType.BackupItemTrigger && trigger.BackupName == backupItem.Name)
+                    {
+                        trigger.Type = TriggerType.None;
+                        trigger.BackupName = null;
+                    }
+                }
                 BackupItems.Remove(backupItem);
                 _backupData.Data.Remove(backupItem.Name);
                 _backupData.Save();
