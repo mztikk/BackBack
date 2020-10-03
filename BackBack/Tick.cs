@@ -30,9 +30,8 @@ namespace BackBack
         public void Dispose() => ((IDisposable)_timer).Dispose();
         private void OnTick(object? state)
         {
-            DateTime now = DateTime.UtcNow;
-            var tickevent = new TickEvent(now);
-            _logger.LogTrace("Publishing {tickevent} at {now}", nameof(TickEvent), now);
+            var tickevent = new TickEvent();
+            _logger.LogTrace("Publishing {tickevent} at {now}", nameof(TickEvent), tickevent.Time);
             _eventAggregator.Publish(tickevent);
         }
     }

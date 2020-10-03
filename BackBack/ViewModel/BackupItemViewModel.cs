@@ -295,7 +295,7 @@ namespace BackBack.ViewModel
                     {
                         _logger.LogDebug("Zipping of backup target enabled");
 
-                        string timestamp = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
+                        string timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
                         string zipFile = Path.ChangeExtension(Path.Combine(ZipFileDestination, $"{Name}_{timestamp}"), "zip");
                         _logger.LogDebug("Target zip file is '{file}'", zipFile);
                         _logger.LogInformation("Creating zip file: '{file}'", zipFile);
@@ -348,7 +348,7 @@ namespace BackBack.ViewModel
                 finally
                 {
                     _logger.LogDebug("Backup finished");
-                    BackupItem.LastExecution = DateTime.UtcNow;
+                    BackupItem.LastExecution = DateTime.Now;
                     LastExecution = BackupItem.LastExecution;
                     _logger.LogDebug("Last Execution is: {time}", BackupItem.LastExecution);
                     _backupData.Save();
@@ -357,7 +357,7 @@ namespace BackBack.ViewModel
                     Task.Delay(5000).ContinueWith((_) => { if (Status == "Finished") { Status = string.Empty; } });
 
                     _logger.LogDebug("Publishing {type}", typeof(PostBackupEvent).ToString());
-                    _eventAggregator.Publish(new PostBackupEvent(DateTime.UtcNow, BackupItem));
+                    _eventAggregator.Publish(new PostBackupEvent(DateTime.Now, BackupItem));
                 }
             }
         }

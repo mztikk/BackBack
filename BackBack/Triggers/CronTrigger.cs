@@ -24,18 +24,18 @@ namespace BackBack.Triggers
             get => _cronExpression; set
             {
                 _cronExpression = value;
-                _next = _cronExpression.GetNextOccurrence(DateTime.UtcNow, true);
+                _next = _cronExpression.GetNextOccurrence(DateTimeOffset.Now, TimeZoneInfo.Local, true);
             }
         }
 
-        private DateTime? _next;
+        private DateTimeOffset? _next;
 
         public void Handle(TickEvent message)
         {
             if (message.Time >= _next)
             {
                 Trigger(new TriggerEventArgs(message.Time));
-                _next = _cronExpression.GetNextOccurrence(DateTime.UtcNow, true);
+                _next = _cronExpression.GetNextOccurrence(DateTimeOffset.Now, TimeZoneInfo.Local, true);
             }
         }
 
