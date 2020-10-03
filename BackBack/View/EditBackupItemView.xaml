@@ -84,7 +84,8 @@
                         </StackPanel>
                         <StackPanel Grid.Row="1" Visibility="{Binding CronTriggerSettingsVisible, Converter={StaticResource BoolVisibilityConverter}}">
                             <TextBlock Style="{DynamicResource TextLabel}" Text="Cron"/>
-                            <TextBox Style="{DynamicResource TextEntry}" Text="{Binding Path=TriggerInfo.Cron, UpdateSourceTrigger=PropertyChanged}"/>
+                            <TextBox Style="{DynamicResource TextEntry}" TextChanged="{s:Action OnCronChanged}" Text="{Binding Path=TriggerInfo.Cron, UpdateSourceTrigger=PropertyChanged}"/>
+                            <TextBlock Style="{DynamicResource TextLabel}" Text="{Binding CronDescription}"/>
                         </StackPanel>
                     </Grid>
                 </TabItem>

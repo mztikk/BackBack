@@ -61,6 +61,7 @@
                                             <RowDefinition Height="auto"/>
                                             <RowDefinition Height="auto"/>
                                             <RowDefinition Height="auto"/>
+                                            <RowDefinition Height="auto"/>
                                         </Grid.RowDefinitions>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="auto"/>
@@ -85,7 +86,16 @@
                                                 Text="{Binding Destination}"/>
                                         </StackPanel>
 
-                                        <Grid Grid.Row="2" Margin="0,8,0,0">
+                                        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,8,0,0">
+                                            <TextBlock
+                                                Style="{DynamicResource TextLabel}"
+                                                Text="Last Execution: "/>
+                                            <TextBlock
+                                                Style="{DynamicResource TextLabel}"
+                                                Text="{Binding LastExecution}"/>
+                                        </StackPanel>
+
+                                        <Grid Grid.Row="3" Margin="0,8,0,0">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="auto"/>
                                                 <ColumnDefinition Width="*"/>
@@ -119,8 +129,8 @@
                                                 </StackPanel>
                                             </Border>
                                         </Grid>
-                                        
-                                        <Grid Grid.Row="3">
+
+                                        <Grid Grid.Row="4">
                                             <TextBlock
                                                 Visibility="{Binding Status,Converter={StaticResource StringLengthVisibleConverter}}"
                                                 Text="{Binding Status}"

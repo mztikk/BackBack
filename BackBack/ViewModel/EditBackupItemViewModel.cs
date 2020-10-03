@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using BackBack.Models;
 using BackBack.Storage.Settings;
+using Cronos;
 using Microsoft.Extensions.Logging;
 using RF.WPF.Extensions;
 using RF.WPF.MVVM;
@@ -148,6 +149,32 @@ namespace BackBack.ViewModel
         {
             get => _backupNames;
             set { _backupNames = value; NotifyOfPropertyChange(); }
+        }
+
+        private string _cronDescription;
+        public string CronDescription
+        {
+            get => _cronDescription;
+            set { _cronDescription = value; NotifyOfPropertyChange(); }
+        }
+
+        public void OnCronChanged()
+        {
+            try
+            {
+                if (CronExpression.Parse(TriggerInfo.Cron) is { })
+                {
+                    CronDescription = CronExpressionDescriptor.ExpressionDescriptor.GetDescription(TriggerInfo.Cron);
+                }
+                else
+                {
+                    CronDescription = string.Empty;
+                }
+            }
+            catch (CronFormatException)
+            {
+                CronDescription = string.Empty;
+            }
         }
 
         public void SelectedTrigger()

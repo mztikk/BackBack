@@ -148,6 +148,13 @@ namespace BackBack.ViewModel
             set { _triggerInfo = value; NotifyOfPropertyChange(); TriggerInfoChanged(); }
         }
 
+        private DateTime _lastExecution;
+        public DateTime LastExecution
+        {
+            get => _lastExecution;
+            set { _lastExecution = value; NotifyOfPropertyChange(); }
+        }
+
         private void TriggerInfoChanged()
         {
             if (_trigger is IDisposable disposable)
@@ -333,11 +340,18 @@ namespace BackBack.ViewModel
                     _logger.LogDebug("Running {name}", nameof(PostCompletionScript));
                     lua.Run(PostCompletionScript ?? string.Empty);
                 }
+                catch (Exception e)
+                {
+                    _logger.LogError(e, $"Running Backup for '{Name}' failed");
+                    throw;
+                }
                 finally
                 {
                     _logger.LogDebug("Backup finished");
                     BackupItem.LastExecution = DateTime.UtcNow;
+                    LastExecution = BackupItem.LastExecution;
                     _logger.LogDebug("Last Execution is: {time}", BackupItem.LastExecution);
+                    _backupData.Save();
                     Running = false;
                     Status = "Finished";
                     Task.Delay(5000).ContinueWith((_) => { if (Status == "Finished") { Status = string.Empty; } });
