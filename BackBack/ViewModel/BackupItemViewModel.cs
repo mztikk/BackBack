@@ -201,11 +201,7 @@ namespace BackBack.ViewModel
             _trigger.OnTrigger += Trigger_OnTrigger;
         }
 
-        private void Trigger_OnTrigger(object sender, TriggerEventArgs e)
-        {
-            Debug.WriteLine($"{e.Time}: {Name}");
-            //BackupAsync();
-        }
+        private void Trigger_OnTrigger(object sender, TriggerEventArgs e) => BackupAsync();
 
         private bool _disposedValue;
 
