@@ -177,7 +177,10 @@ namespace BackBack.ViewModel
                     {
                         BackupItemTrigger trigger = _container.Get<BackupItemTrigger>();
                         _trigger = trigger;
-                        trigger.BackupItem = _backupData[TriggerInfo.BackupName];
+                        if (!string.IsNullOrWhiteSpace(TriggerInfo.BackupName))
+                        {
+                            trigger.BackupItem = _backupData[TriggerInfo.BackupName];
+                        }
                     }
                     break;
                 default:

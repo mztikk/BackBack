@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using BackBack.LUA;
 using BackBack.Storage;
 using BackBack.ViewModel;
@@ -19,6 +20,13 @@ namespace BackBack
 
         protected override void ConfigureIoC(IStyletIoCBuilder builder)
         {
+            var startup = new StartupInfo
+            {
+                Args = Args
+            };
+            startup.StartMinmized = Args.Contains("minimized");
+            builder.Bind<StartupInfo>().ToInstance(startup);
+
             RLogConfigurator config = new RLogConfigurator()
                 .SetLoglevel(LogLevel.Debug)
                 .AddConsoleOutput()

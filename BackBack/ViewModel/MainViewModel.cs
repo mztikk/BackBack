@@ -17,8 +17,9 @@ namespace BackBack.ViewModel
         private readonly ILogger _logger;
         private readonly IContainer _container;
         private readonly BackupData _backupData;
+        private readonly IWindowManager _windowManager;
 
-        public MainViewModel(IContainer container, INavigationService navigationService, BackupData backupData, Func<Type, ILogger> loggerFactory) : base(navigationService)
+        public MainViewModel(IContainer container, INavigationService navigationService, BackupData backupData, Func<Type, ILogger> loggerFactory, IWindowManager windowManager) : base(navigationService)
         {
             Title = ApplicationInfo.s_appName;
 
@@ -26,6 +27,7 @@ namespace BackBack.ViewModel
 
             _container = container;
             _backupData = backupData;
+            _windowManager = windowManager;
             BackupItems.Clear();
             foreach (KeyValuePair<string, BackupItem> item in _backupData.Data)
             {
