@@ -30,7 +30,7 @@ namespace BackBack.ViewModel
         {
             base.OnNavigatedTo();
 
-            Triggers = new BindableCollection<string> { "None", "Timed", "BackupItem" };
+            Triggers = new BindableCollection<string> { "None", "Cron", "Timed", "BackupItem" };
             var ignores = new HashSet<string> { "BackupItem" };
 
             _logger.LogDebug("Syncing Properties with {type}: '{name}'", BackupItem.TypeName(), BackupItem.Name);
@@ -136,6 +136,13 @@ namespace BackBack.ViewModel
             set { _timedTriggerSettingsVisible = value; NotifyOfPropertyChange(); }
         }
 
+        private bool _cronTriggerSettingsVisible;
+        public bool CronTriggerSettingsVisible
+        {
+            get => _cronTriggerSettingsVisible;
+            set { _cronTriggerSettingsVisible = value; NotifyOfPropertyChange(); }
+        }
+
         private IEnumerable<string> _backupNames;
         public IEnumerable<string> BackupNames
         {
@@ -147,6 +154,7 @@ namespace BackBack.ViewModel
         {
             BackupTriggerSettingsVisible = false;
             TimedTriggerSettingsVisible = false;
+            CronTriggerSettingsVisible = false;
 
             switch (TriggerInfo.Type)
             {
@@ -157,6 +165,9 @@ namespace BackBack.ViewModel
                     break;
                 case TriggerType.BackupItemTrigger:
                     BackupTriggerSettingsVisible = true;
+                    break;
+                case TriggerType.CronTrigger:
+                    CronTriggerSettingsVisible = true;
                     break;
                 default:
                     break;

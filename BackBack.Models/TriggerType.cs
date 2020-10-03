@@ -4,6 +4,7 @@
     {
         None,
         TimedTrigger,
-        BackupItemTrigger
+        BackupItemTrigger,
+        CronTrigger
     }
 }

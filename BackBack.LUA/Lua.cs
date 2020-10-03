@@ -68,7 +68,7 @@ namespace BackBack.LUA
         protected MethodInfo GetStaticMethod(Type type, string name) => type.GetMethod(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
         protected MethodInfo GetStaticMethod(string name) => GetStaticMethod(typeof(Lua), name);
 
-        protected static string Timestamp(string format) => DateTime.Now.ToString(format);
+        protected static string Timestamp(string format) => DateTime.UtcNow.ToString(format);
 
         protected virtual void Dispose(bool disposing)
         {

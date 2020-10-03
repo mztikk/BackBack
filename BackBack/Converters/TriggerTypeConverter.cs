@@ -19,6 +19,8 @@ namespace BackBack.Converters
                         return "Timed";
                     case TriggerType.BackupItemTrigger:
                         return "BackupItem";
+                    case TriggerType.CronTrigger:
+                        return "Cron";
                 }
             }
 
@@ -43,6 +45,8 @@ namespace BackBack.Converters
                             return TriggerType.BackupItemTrigger;
                         case "None":
                             return TriggerType.None;
+                        case "Cron":
+                            return TriggerType.CronTrigger;
                     }
                 }
             }

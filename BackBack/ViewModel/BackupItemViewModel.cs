@@ -9,6 +9,7 @@ using BackBack.Models;
 using BackBack.Models.Events;
 using BackBack.Storage.Settings;
 using BackBack.Triggers;
+using Cronos;
 using Microsoft.Extensions.Logging;
 using RF.WPF.Extensions;
 using RF.WPF.MVVM;
@@ -183,6 +184,16 @@ namespace BackBack.ViewModel
                         }
                     }
                     break;
+                case TriggerType.CronTrigger:
+                    {
+                        CronTrigger trigger = _container.Get<CronTrigger>();
+                        _trigger = trigger;
+                        if (!string.IsNullOrWhiteSpace(TriggerInfo.Cron))
+                        {
+                            trigger.CronExpression = CronExpression.Parse(TriggerInfo.Cron);
+                        }
+                    }
+                    break;
                 default:
                     throw new NotImplementedException();
             }
@@ -190,7 +201,11 @@ namespace BackBack.ViewModel
             _trigger.OnTrigger += Trigger_OnTrigger;
         }
 
-        private void Trigger_OnTrigger(object sender, TriggerEventArgs e) => BackupAsync();
+        private void Trigger_OnTrigger(object sender, TriggerEventArgs e)
+        {
+            Debug.WriteLine($"{e.Time}: {Name}");
+            //BackupAsync();
+        }
 
         private bool _disposedValue;
 
@@ -277,7 +292,7 @@ namespace BackBack.ViewModel
                     {
                         _logger.LogDebug("Zipping of backup target enabled");
 
-                        string timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
+                        string timestamp = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
                         string zipFile = Path.ChangeExtension(Path.Combine(ZipFileDestination, $"{Name}_{timestamp}"), "zip");
                         _logger.LogDebug("Target zip file is '{file}'", zipFile);
                         _logger.LogInformation("Creating zip file: '{file}'", zipFile);
@@ -325,14 +340,14 @@ namespace BackBack.ViewModel
                 finally
                 {
                     _logger.LogDebug("Backup finished");
-                    BackupItem.LastExecution = DateTime.Now;
+                    BackupItem.LastExecution = DateTime.UtcNow;
                     _logger.LogDebug("Last Execution is: {time}", BackupItem.LastExecution);
                     Running = false;
                     Status = "Finished";
                     Task.Delay(5000).ContinueWith((_) => { if (Status == "Finished") { Status = string.Empty; } });
 
                     _logger.LogDebug("Publishing {type}", typeof(PostBackupEvent).ToString());
-                    _eventAggregator.Publish(new PostBackupEvent(DateTime.Now, BackupItem));
+                    _eventAggregator.Publish(new PostBackupEvent(DateTime.UtcNow, BackupItem));
                 }
             }
         }

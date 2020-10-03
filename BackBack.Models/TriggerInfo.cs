@@ -7,5 +7,6 @@ namespace BackBack.Models
         public TriggerType Type { get; set; }
         public TimeSpan Interval { get; set; }
         public string BackupName { get; set; }
+        public string Cron { get; set; }
     }
 }
