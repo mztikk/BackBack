@@ -1,4 +1,6 @@
 using System;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using BackBack.LUA;
 using BackBack.Storage;
@@ -17,6 +19,15 @@ namespace BackBack
         private ILogger _logger;
 
         private static readonly StyletIoCModule[] s_iocModules = new StyletIoCModule[] { new RF.WPF.IocSetup(), new IocSetup(), new StorageIoc(), new LuaIoc() };
+
+        protected override void OnStart()
+        {
+            using var proc = Process.GetCurrentProcess();
+            string location = Path.GetDirectoryName(proc.MainModule.FileName);
+            Environment.CurrentDirectory = location;
+
+            base.OnStart();
+        }
 
         protected override void ConfigureIoC(IStyletIoCBuilder builder)
         {
