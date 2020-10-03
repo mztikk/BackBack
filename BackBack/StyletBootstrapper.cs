@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using BackBack.LUA;
 using BackBack.Storage;
+using BackBack.Storage.Settings;
 using BackBack.ViewModel;
 using Microsoft.Extensions.Logging;
 using RF.WPF;
@@ -69,6 +70,12 @@ namespace BackBack
             {
                 _logger?.LogDebug("Configuring {iocmodule}: '{module}'", nameof(IocBase), item.TypeName());
                 item.Configure(Container);
+            }
+
+            Settings settings = Container.Get<Settings>();
+            if (settings.GetValue<bool>("StartWithWindows"))
+            {
+                Startup.AddToStartup("minimized");
             }
 
             Container.Get<Tick>();

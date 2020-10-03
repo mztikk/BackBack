@@ -68,7 +68,7 @@ namespace BackBack.View
 
         private void ViewBase_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (!_forceClose)
+            if (!_forceClose && _settings.GetValue<bool>("CloseToTray"))
             {
                 _prevState = WindowState;
                 e.Cancel = true;
