@@ -2,40 +2,55 @@
 using BackBack.Models;
 using BackBack.Models.Events;
 using Cronos;
+using Microsoft.Extensions.Logging;
+using RF.WPF.Extensions;
 using Stylet;
 
 namespace BackBack.Triggers
 {
     public class CronTrigger : TriggerEvent, IHandle<TickEvent>, IDisposable
     {
+        private readonly ILogger _logger;
         private readonly IEventAggregator _eventAggregator;
         private bool _disposedValue;
-        private CronExpression _cronExpression;
 
-        public CronTrigger(IEventAggregator eventAggregator)
+        public CronTrigger(IEventAggregator eventAggregator, Func<Type, ILogger> loggerFactory)
         {
+            _logger = loggerFactory(typeof(CronTrigger));
+
             _eventAggregator = eventAggregator;
             eventAggregator.Subscribe(this);
         }
 
         public BackupItem BackupItem { get; set; }
+
+        private CronExpression _cronExpression;
         public CronExpression CronExpression
         {
             get => _cronExpression; set
             {
                 _cronExpression = value;
-                _next = _cronExpression.GetNextOccurrence(DateTimeOffset.Now, TimeZoneInfo.Local, true);
+                NextExecution = _cronExpression.GetNextOccurrence(DateTimeOffset.Now, TimeZoneInfo.Local, true);
             }
         }
 
-        private DateTimeOffset? _next;
+        private DateTimeOffset? _nextExecution;
+        private DateTimeOffset? NextExecution
+        {
+            get => _nextExecution; set
+            {
+                _nextExecution = value;
+                _logger.LogInformation("Next Execution of '{name}' set to {value}", BackupItem.Name, value);
+            }
+        }
 
         public void Handle(TickEvent message)
         {
-            if (message.Time >= _next)
+            if (message.Time >= NextExecution)
             {
+                _logger.LogDebug("{type} triggering with {next} at {messageTime}", this.TypeName(), NextExecution, message.Time);
                 Trigger(new TriggerEventArgs(message.Time));
-                _next = _cronExpression.GetNextOccurrence(DateTimeOffset.Now, TimeZoneInfo.Local, true);
+                NextExecution = _cronExpression.GetNextOccurrence(DateTimeOffset.Now, TimeZoneInfo.Local, true);
             }
         }
 
