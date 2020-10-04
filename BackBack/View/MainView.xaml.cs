@@ -19,6 +19,8 @@ namespace BackBack.View
     {
         private readonly Settings _settings;
         private readonly StartupInfo _startupInfo;
+
+        private TaskbarIcon _tbi;
         private WindowState _prevState = WindowState.Normal;
         private bool _forceClose = false;
         private ILogger _logger;
@@ -40,22 +42,24 @@ namespace BackBack.View
             iconStream.Dispose();
 
             _logger.LogDebug("Creating tray icon");
-            TaskbarIcon tbi = new TaskbarIcon
+            _tbi = new TaskbarIcon
             {
                 Icon = icon,
                 Visibility = Visibility.Visible,
             };
-            tbi.TrayMouseDoubleClick += Tbi_TrayMouseDoubleClick;
+            _tbi.TrayMouseDoubleClick += Tbi_TrayMouseDoubleClick;
             var ctxMenu = new ContextMenu();
             var exitItem = new MenuItem { Header = "Exit" };
             exitItem.Click += ExitItem_Click;
             ctxMenu.Items.Add(exitItem);
-            tbi.ContextMenu = ctxMenu;
+            _tbi.ContextMenu = ctxMenu;
         }
 
         protected override void OnContentRendered(EventArgs e)
         {
             base.OnContentRendered(e);
+
+            _tbi.ToolTipText = Title;
 
             _logger.LogInformation("StartMinimized is '{value}'", _startupInfo.StartMinmized);
             if (_startupInfo.StartMinmized)
