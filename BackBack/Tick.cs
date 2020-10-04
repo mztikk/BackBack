@@ -22,7 +22,7 @@ namespace BackBack
             _settings = settings;
 
             int interval = 100;
-            _logger.LogDebug("Creating {tick} with interval of '{interval}'", nameof(Tick), interval);
+            _logger.LogInformation("Creating {tick} with interval of '{interval}'", nameof(Tick), interval);
 
             _timer = new Timer(OnTick, null, 0, interval);
         }

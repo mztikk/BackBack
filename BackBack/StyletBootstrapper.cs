@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Windows.Threading;
 using BackBack.LUA;
 using BackBack.Storage;
 using BackBack.Storage.Settings;
@@ -18,6 +19,7 @@ namespace BackBack
     public class StyletBootstrapper : Bootstrapper<MainViewModel>
     {
         private ILogger _logger;
+        private Func<Type, ILogger> _createLogger;
 
         private static readonly StyletIoCModule[] s_iocModules = new StyletIoCModule[] { new RF.WPF.IocSetup(), new IocSetup(), new StorageIoc(), new LuaIoc() };
 
@@ -27,11 +29,32 @@ namespace BackBack
             string location = Path.GetDirectoryName(proc.MainModule.FileName);
             Environment.CurrentDirectory = location;
 
+            LogLevel logLevel;
+#if DEBUG
+            logLevel = LogLevel.Debug;
+#else
+            logLevel = LogLevel.Information;
+#endif
+
+            RLogConfigurator config = new RLogConfigurator()
+                .SetLoglevel(logLevel)
+                .AddConsoleOutput()
+                .AddStaticFileOutput("logs/BackBack.log")
+                .AddFileOutput("logs/context/BackBack.{LogContext}.log");
+            LogRProvider provider = new LogRProvider(config);
+            _createLogger = (Type t) => provider.CreateLogger(t.FullName);
+
+            _logger = _createLogger(typeof(StyletBootstrapper));
+            _logger.LogInformation("Logger initialized with LogLevel {loglevel}", logLevel);
+
             base.OnStart();
         }
 
         protected override void ConfigureIoC(IStyletIoCBuilder builder)
         {
+            _logger.LogInformation("Configuring IoC");
+
+            _logger.LogInformation("Setting {type}", typeof(StartupInfo).ToString());
             var startup = new StartupInfo
             {
                 Args = Args
@@ -39,17 +62,7 @@ namespace BackBack
             startup.StartMinmized = Args.Contains("minimized");
             builder.Bind<StartupInfo>().ToInstance(startup);
 
-            RLogConfigurator config = new RLogConfigurator()
-                .SetLoglevel(LogLevel.Debug)
-                .AddConsoleOutput()
-                .AddStaticFileOutput("logs/BackBack.log")
-                .AddFileOutput("logs/context/BackBack.{LogContext}.log");
-            LogRProvider provider = new LogRProvider(config);
-            Func<Type, ILogger> createLogger = (Type t) => provider.CreateLogger(t.FullName);
-
-            _logger = createLogger(typeof(StyletBootstrapper));
-
-            builder.Bind<Func<Type, ILogger>>().ToInstance(createLogger);
+            builder.Bind<Func<Type, ILogger>>().ToInstance(_createLogger);
 
             // Configure the IoC container in here
             foreach (StyletIoCModule item in s_iocModules)
@@ -73,12 +86,22 @@ namespace BackBack
             }
 
             Settings settings = Container.Get<Settings>();
+            bool startWithWindows = settings.GetValue<bool>("StartWithWindows");
+            _logger.LogInformation("StartWithWindows is '{value}'", startWithWindows);
             if (settings.GetValue<bool>("StartWithWindows"))
             {
+                _logger.LogInformation("Adding current instance to startup");
                 Startup.AddToStartup("minimized");
             }
 
             Container.Get<Tick>();
+        }
+
+        protected override void OnUnhandledException(DispatcherUnhandledExceptionEventArgs e)
+        {
+            _logger.LogCritical(e.Exception, "Unhandled Exception: {ex}", e.Exception.GetBaseException().ToString());
+
+            base.OnUnhandledException(e);
         }
     }
 }

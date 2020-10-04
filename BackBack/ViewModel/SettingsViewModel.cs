@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using BackBack.Storage.Settings;
+using Microsoft.Extensions.Logging;
 using RF.WPF.MVVM;
 using RF.WPF.Navigation;
 
@@ -9,8 +11,10 @@ namespace BackBack.ViewModel
     {
         private readonly Settings _settings;
 
-        public SettingsViewModel(INavigationService navigationService, Settings settings) : base(navigationService)
+        public SettingsViewModel(INavigationService navigationService, Settings settings, Func<Type, ILogger> loggerFactory) : base(navigationService)
         {
+            _logger = loggerFactory(typeof(SettingsViewModel));
+
             Title = "Settings";
             _settings = settings;
         }
@@ -19,8 +23,11 @@ namespace BackBack.ViewModel
         {
             base.OnNavigatedTo();
 
+            _logger.LogTrace("Opened settings");
+
             SettingsDir = _settings.GetSettingsDir();
 
+            _logger.LogDebug("Syncing settings properties");
             PropertySync.Sync(_settings.Data, this, new HashSet<string>());
         }
 
@@ -40,6 +47,8 @@ namespace BackBack.ViewModel
         }
 
         private bool _startWithWindows;
+        private ILogger _logger;
+
         public bool StartWithWindows
         {
             get => _startWithWindows;
@@ -48,12 +57,21 @@ namespace BackBack.ViewModel
 
         public void Save()
         {
+            _logger.LogTrace("Saving settings");
+
+            _logger.LogDebug("Syncing settings properties");
             PropertySync.Sync(this, _settings.Data, new HashSet<string>());
+
+            _logger.LogDebug("Saving settings data");
             _settings.Save();
 
             NavigateBack();
         }
 
-        public void Cancel() => NavigateBack();
+        public void Cancel()
+        {
+            _logger.LogDebug("Canceling settings");
+            NavigateBack();
+        }
     }
 }

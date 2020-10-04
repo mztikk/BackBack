@@ -197,6 +197,7 @@ namespace BackBack.ViewModel
                         _trigger = trigger;
                         if (!string.IsNullOrWhiteSpace(TriggerInfo.Cron))
                         {
+                            trigger.BackupItem = BackupItem;
                             trigger.CronExpression = CronExpression.Parse(TriggerInfo.Cron);
                         }
                     }
