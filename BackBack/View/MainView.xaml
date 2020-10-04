@@ -92,7 +92,7 @@
                                                 Text="Last Execution: "/>
                                             <TextBlock
                                                 Style="{DynamicResource TextLabel}"
-                                                Text="{Binding LastExecution}"/>
+                                                Text="{Binding LastExecution, Converter={StaticResource DateTimeToLocalConverter}}"/>
                                         </StackPanel>
 
                                         <Grid Grid.Row="3" Margin="0,8,0,0">
