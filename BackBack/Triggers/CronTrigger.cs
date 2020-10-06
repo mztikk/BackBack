@@ -30,7 +30,7 @@ namespace BackBack.Triggers
             get => _cronExpression; set
             {
                 _cronExpression = value;
-                NextExecution = _cronExpression.GetNextOccurrence(DateTimeOffset.Now, TimeZoneInfo.Local, true);
+                NextExecution = _cronExpression.GetNextOccurrence(new DateTimeOffset(BackupItem.LastExecution), TimeZoneInfo.Local, true);
             }
         }
 
