@@ -283,6 +283,16 @@ namespace BackBack.ViewModel
                             _logger.LogTrace("Copying file: '{file}' to '{targetfile}'", file, newFile);
                             FileUtils.Copy(basePath, target, new FileInfo(file), true);
                         });
+
+                        _logger.LogInformation("Removing files not found in source");
+                        Parallel.ForEach(FileUtils.Walk(target.FullName, FileSystemEnumeration.FilesOnly), (file) =>
+                        {
+                            if (!collectedFiles.Contains(file))
+                            {
+                                _logger.LogTrace("Removing {file}", file);
+                                File.Delete(file);
+                            }
+                        });
                     }
                     else if (File.Exists(Source))
                     {
