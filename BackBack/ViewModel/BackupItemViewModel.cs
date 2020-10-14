@@ -43,6 +43,8 @@ namespace BackBack.ViewModel
             _container = container;
             _backupData = backupData;
             BackupCommand = new AsyncCommand(BackupAsync);
+            OpenSourceCommand = new Command(OpenSource);
+            OpenDestinationCommand = new Command(OpenDestination);
         }
 
         public override void OnNavigatedTo()
@@ -56,11 +58,24 @@ namespace BackBack.ViewModel
         public BackupItem BackupItem { get; set; }
 
         private ICommand _backupCommand;
-
         public ICommand BackupCommand
         {
             get => _backupCommand;
             set { _backupCommand = value; NotifyOfPropertyChange(); }
+        }
+
+        private ICommand _openSourceCommand;
+        public ICommand OpenSourceCommand
+        {
+            get => _openSourceCommand;
+            set { _openSourceCommand = value; NotifyOfPropertyChange(); }
+        }
+
+        private ICommand _openDestinationCommand;
+        public ICommand OpenDestinationCommand
+        {
+            get => _openDestinationCommand;
+            set { _openDestinationCommand = value; NotifyOfPropertyChange(); }
         }
 
         private string _name;
@@ -216,6 +231,16 @@ namespace BackBack.ViewModel
         private readonly object _locker = new object();
 
         public async Task BackupAsync() => await Task.Run(Backup);
+
+        public void OpenSource()
+        {
+            Process.Start("explorer.exe", Source);
+        }
+
+        public void OpenDestination()
+        {
+            Process.Start("explorer.exe", Destination);
+        }
 
         public void Backup()
         {

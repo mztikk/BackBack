@@ -31,8 +31,14 @@ namespace BackBack.LUA
 
         public static void Zip_File(string source, string dest)
         {
+            var fi = new FileInfo(dest);
+            if (!fi.Directory.Exists)
+            {
+                fi.Directory.Create();
+            }
+
             using var stream = new FileStream(dest, FileMode.Create, FileAccess.ReadWrite);
-            using var archive = new ZipArchive(stream);
+            using var archive = new ZipArchive(stream, ZipArchiveMode.Create);
             archive.CreateEntryFromFile(source, Path.GetFileName(source));
         }
     }
