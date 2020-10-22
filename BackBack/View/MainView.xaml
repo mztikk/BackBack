@@ -15,6 +15,11 @@
     Closing="ViewBase_Closing"
     >
     <Grid>
+        <Grid.Resources>
+            <Thickness x:Key="PanelPadding">6</Thickness>
+            <Thickness x:Key="WindowPadding">6</Thickness>
+        </Grid.Resources>
+        
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
@@ -53,9 +58,9 @@
                 <ItemsControl ItemsSource="{Binding BackupItems}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel Margin="8" >
+                            <StackPanel Margin="{DynamicResource PanelPadding}" >
                                 <Border Style="{DynamicResource CardBorder}">
-                                    <Grid Margin="8">
+                                    <Grid Margin="{DynamicResource PanelPadding}">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="auto"/>
                                             <RowDefinition Height="auto"/>
@@ -63,10 +68,6 @@
                                             <RowDefinition Height="auto"/>
                                             <RowDefinition Height="auto"/>
                                         </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="auto"/>
-                                            <ColumnDefinition Width="auto"/>
-                                        </Grid.ColumnDefinitions>
 
                                         <StackPanel Grid.Row="0">
                                             <TextBlock
@@ -78,24 +79,25 @@
                                             <TextBlock
                                                 Style="{DynamicResource TextLabel}"
                                                 Text="{Binding Source}"/>
+                                            <!--<Button
+                                                Style="{DynamicResource IconButton}"
+                                                Command="{Binding OpenSourceCommand}">
+                                                <Image Source="{StaticResource folderDrawingImage}"/>
+                                            </Button>-->
                                             <TextBlock
                                                 Style="{DynamicResource TextLabel}"
                                                 Text=" -> "/>
                                             <TextBlock
                                                 Style="{DynamicResource TextLabel}"
                                                 Text="{Binding Destination}"/>
+                                            <!--<Button
+                                                Style="{DynamicResource IconButton}"
+                                                Command="{Binding OpenDestinationCommand}">
+                                                <Image Source="{StaticResource folderDrawingImage}"/>
+                                            </Button>-->
                                         </StackPanel>
 
-                                        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,8,0,0">
-                                            <TextBlock
-                                                Style="{DynamicResource TextLabel}"
-                                                Text="Last Execution: "/>
-                                            <TextBlock
-                                                Style="{DynamicResource TextLabel}"
-                                                Text="{Binding LastExecution, Converter={StaticResource DateTimeToLocalConverter}}"/>
-                                        </StackPanel>
-
-                                        <Grid Grid.Row="3" Margin="0,8,0,0">
+                                        <Grid Grid.Row="3">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="auto"/>
                                                 <ColumnDefinition Width="*"/>
@@ -128,6 +130,15 @@
                                                     </Button>
                                                 </StackPanel>
                                             </Border>
+
+                                            <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                                                <TextBlock
+                                                Style="{DynamicResource TextLabel}"
+                                                Text="Last Execution: "/>
+                                                <TextBlock
+                                                Style="{DynamicResource TextLabel}"
+                                                Text="{Binding LastExecution, Converter={StaticResource DateTimeToLocalConverter}}"/>
+                                            </StackPanel>
                                         </Grid>
 
                                         <Grid Grid.Row="4">
