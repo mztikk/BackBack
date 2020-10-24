@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using BackBack.Models;
 using BackBack.Storage.Settings;
 using RFReborn.Files;
@@ -27,6 +28,8 @@ namespace BackBack.LUA
 
         private void SetupLua()
         {
+            NLua.State.Encoding = Encoding.UTF8;
+
             NLua["settingsDir"] = _settings.GetSettingsDir();
             NLua["storageDir"] = _settings.GetStorageDir();
 
