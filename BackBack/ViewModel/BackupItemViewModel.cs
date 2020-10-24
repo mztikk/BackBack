@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -31,6 +32,7 @@ namespace BackBack.ViewModel
         private readonly IEventAggregator _eventAggregator;
         private readonly IContainer _container;
         private readonly BackupData _backupData;
+
         private RoutineBase? _routine = null;
 
         private TriggerEvent _trigger;
@@ -148,12 +150,39 @@ namespace BackBack.ViewModel
             set { _running = value; NotifyOfPropertyChange(); }
         }
 
-
         private string _status;
         public string Status
         {
             get => _status;
             set { _status = value; NotifyOfPropertyChange(); }
+        }
+
+        private string _currentFile;
+        public string CurrentFile
+        {
+            get => _currentFile;
+            set { _currentFile = value; NotifyOfPropertyChange(); }
+        }
+
+        private long _totalFileCount;
+        public long TotalFileCount
+        {
+            get => _totalFileCount;
+            set { _totalFileCount = value; NotifyOfPropertyChange(); }
+        }
+
+        private long _runningFileCount;
+        public long RunningFileCount
+        {
+            get => _runningFileCount;
+            set { _runningFileCount = value; NotifyOfPropertyChange(); }
+        }
+
+        private double _runningFilePercentage;
+        public double RunningFilePercentage
+        {
+            get => _runningFilePercentage;
+            set { _runningFilePercentage = value; NotifyOfPropertyChange(); }
         }
 
         private TriggerInfo _triggerInfo;
@@ -232,15 +261,9 @@ namespace BackBack.ViewModel
 
         public async Task BackupAsync() => await Task.Run(Backup);
 
-        public void OpenSource()
-        {
-            Process.Start("explorer.exe", Source);
-        }
+        public void OpenSource() => Process.Start("explorer.exe", Source);
 
-        public void OpenDestination()
-        {
-            Process.Start("explorer.exe", Destination);
-        }
+        public void OpenDestination() => Process.Start("explorer.exe", Destination);
 
         public void Backup()
         {
@@ -271,6 +294,7 @@ namespace BackBack.ViewModel
                         _logger.LogDebug("Backing up from '{source}' to '{target}'", basePath, target);
 
                         var collectedFiles = new HashSet<string>();
+                        var copiedFiles = new ConcurrentDictionary<string, bool>();
 
                         var collector = new FileCollector();
                         if (Ignores is { })
@@ -279,44 +303,77 @@ namespace BackBack.ViewModel
                             collector.AddListModule(Ignores.GetLines().SkipEmpty());
                         }
 
-                        Parallel.ForEach(collector.EnumerateFiles(Source), (file) =>
+                        try
                         {
-                            if (file is null)
+                            Status = $"Collecting files to backup from '{Source}'";
+                            foreach (string file in collector.EnumerateFiles(Source))
                             {
-                                _logger.LogWarning("Enumerated file is null");
-                                return;
+                                collectedFiles.Add(file);
                             }
-
-                            _logger.LogTrace("Copying file: '{file}'", file);
-
-                            string newFile = FileUtils.MakePath(basePath, target, file);
-                            if (newFile is null)
+                            TotalFileCount = collectedFiles.Count;
+                            Status = $"Backing up Directory '{Source}'";
+                            Parallel.ForEach(collectedFiles, (file) =>
                             {
-                                _logger.LogError("Target of file: '{file}' is null", file);
-                                return;
-                            }
+                                try
+                                {
+                                    if (file is null)
+                                    {
+                                        _logger.LogWarning("Enumerated file is null");
+                                        return;
+                                    }
 
-                            _logger.LogTrace("Target is '{file}'", newFile);
+                                    _logger.LogTrace("Copying file: '{file}'", file);
+                                    CurrentFile = file;
 
-                            collectedFiles.Add(newFile);
-                            if (File.Exists(newFile) && FileUtils.AreEqual(file, newFile))
-                            {
-                                _logger.LogInformation("File: '{file}' already exists and is equal", newFile);
-                                return;
-                            }
+                                    string newFile = FileUtils.MakePath(basePath, target, file);
+                                    if (newFile is null)
+                                    {
+                                        _logger.LogError("Target of file: '{file}' is null", file);
+                                        return;
+                                    }
 
-                            _logger.LogTrace("Copying file: '{file}' to '{targetfile}'", file, newFile);
-                            FileUtils.Copy(basePath, target, new FileInfo(file), true);
-                        });
+                                    _logger.LogTrace("Target is '{file}'", newFile);
+
+                                    copiedFiles.Add(newFile, true);
+                                    if (File.Exists(newFile) && FileUtils.AreEqual(file, newFile))
+                                    {
+                                        _logger.LogInformation("File: '{file}' already exists and is equal", newFile);
+                                        return;
+                                    }
+
+                                    _logger.LogTrace("Copying file: '{file}' to '{targetfile}'", file, newFile);
+                                    FileUtils.Copy(basePath, target, new FileInfo(file), true);
+                                }
+                                catch (Exception e)
+                                {
+                                    _logger.LogError(e, e.ToString());
+                                    throw;
+                                }
+                                finally
+                                {
+                                    RunningFileCount++;
+                                }
+                            });
+                        }
+                        finally
+                        {
+                            CurrentFile = string.Empty;
+                        }
 
                         _logger.LogInformation("Removing files not found in source");
-                        Parallel.ForEach(FileUtils.Walk(target.FullName, FileSystemEnumeration.FilesOnly), (file) =>
+                        var toDelete = new HashSet<string>();
+                        foreach (string file in FileUtils.Walk(target.FullName, FileSystemEnumeration.FilesOnly))
                         {
-                            if (!collectedFiles.Contains(file))
+                            if (!copiedFiles.ContainsKey(file))
                             {
-                                _logger.LogTrace("Removing {file}", file);
-                                File.Delete(file);
+                                _logger.LogTrace("Adding '{file}' to deletion list", file);
+                                toDelete.Add(file);
                             }
+                        }
+                        Parallel.ForEach(toDelete, (file) =>
+                        {
+                            _logger.LogTrace("Removing {file}", file);
+                            File.Delete(file);
                         });
                     }
                     else if (File.Exists(Source))
@@ -390,6 +447,8 @@ namespace BackBack.ViewModel
                     _backupData.Save();
                     Running = false;
                     Status = "Finished";
+                    TotalFileCount = 0;
+                    RunningFileCount = 0;
                     Task.Delay(5000).ContinueWith((_) => { if (Status == "Finished") { Status = string.Empty; } });
 
                     _logger.LogDebug("Publishing {type}", typeof(PostBackupEvent).ToString());

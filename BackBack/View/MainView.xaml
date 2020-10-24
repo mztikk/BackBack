@@ -19,7 +19,7 @@
             <Thickness x:Key="PanelPadding">6</Thickness>
             <Thickness x:Key="WindowPadding">6</Thickness>
         </Grid.Resources>
-        
+
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
@@ -131,21 +131,39 @@
                                                 </StackPanel>
                                             </Border>
 
-                                            <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                                            <StackPanel
+                                                Grid.Column="2"
+                                                Orientation="Horizontal"
+                                                HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                                                Visibility="{Binding Running,Converter={StaticResource InverseBoolVisibilityConverter}}">
+                                                <TextBlock Style="{DynamicResource TextLabel}" Text="Last Execution: "/>
                                                 <TextBlock
-                                                Style="{DynamicResource TextLabel}"
-                                                Text="Last Execution: "/>
-                                                <TextBlock
-                                                Style="{DynamicResource TextLabel}"
-                                                Text="{Binding LastExecution, Converter={StaticResource DateTimeToLocalConverter}}"/>
+                                                    Style="{DynamicResource TextLabel}"
+                                                    Text="{Binding LastExecution, Converter={StaticResource DateTimeToLocalConverter}}"/>
                                             </StackPanel>
                                         </Grid>
 
                                         <Grid Grid.Row="4">
-                                            <TextBlock
-                                                Visibility="{Binding Status,Converter={StaticResource StringLengthVisibleConverter}}"
-                                                Text="{Binding Status}"
-                                                />
+                                            <StackPanel
+                                                Orientation="Horizontal"
+                                                Visibility="{Binding Running, Converter={StaticResource BoolVisibilityConverter}}">
+                                                <TextBlock Text="{Binding Status}"/>
+                                                <TextBlock
+                                                    Visibility="{Binding CurrentFile, Converter={StaticResource StringLengthVisibleConverter}}">
+                                                    <TextBlock.Text>
+                                                        <MultiBinding StringFormat="{}({0} / {1})">
+                                                            <Binding Path="RunningFileCount"/>
+                                                            <Binding Path="TotalFileCount"/>
+                                                        </MultiBinding>
+                                                    </TextBlock.Text>
+                                                </TextBlock>
+                                                <TextBlock
+                                                    Text=" -> "
+                                                    Visibility="{Binding CurrentFile, Converter={StaticResource StringLengthVisibleConverter}}"/>
+                                                <TextBlock
+                                                    Text="{Binding CurrentFile}"
+                                                    Visibility="{Binding CurrentFile, Converter={StaticResource StringLengthVisibleConverter}}"/>
+                                            </StackPanel>
                                         </Grid>
                                     </Grid>
                                 </Border>
