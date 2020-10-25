@@ -145,24 +145,28 @@
 
                                         <Grid Grid.Row="4">
                                             <StackPanel
-                                                Orientation="Horizontal"
                                                 Visibility="{Binding Running, Converter={StaticResource BoolVisibilityConverter}}">
-                                                <TextBlock Text="{Binding Status}"/>
-                                                <TextBlock
-                                                    Visibility="{Binding CurrentFile, Converter={StaticResource StringLengthVisibleConverter}}">
-                                                    <TextBlock.Text>
-                                                        <MultiBinding StringFormat="{}({0} / {1})">
-                                                            <Binding Path="RunningFileCount"/>
-                                                            <Binding Path="TotalFileCount"/>
-                                                        </MultiBinding>
-                                                    </TextBlock.Text>
-                                                </TextBlock>
-                                                <TextBlock
-                                                    Text=" -> "
-                                                    Visibility="{Binding CurrentFile, Converter={StaticResource StringLengthVisibleConverter}}"/>
-                                                <TextBlock
-                                                    Text="{Binding CurrentFile}"
-                                                    Visibility="{Binding CurrentFile, Converter={StaticResource StringLengthVisibleConverter}}"/>
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding Status}"/>
+                                                </StackPanel>
+                                                <StackPanel Visibility="{Binding CurrentFile, Converter={StaticResource StringLengthVisibleConverter}}">
+                                                    <TextBlock Text="{Binding CurrentFile}"/>
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="auto"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Grid.Column="0" Visibility="{Binding CurrentFile, Converter={StaticResource StringLengthVisibleConverter}}">
+                                                            <TextBlock.Text>
+                                                                <MultiBinding StringFormat="{}({0} / {1})">
+                                                                    <Binding Path="RunningFileCount"/>
+                                                                    <Binding Path="TotalFileCount"/>
+                                                                </MultiBinding>
+                                                            </TextBlock.Text>
+                                                        </TextBlock>
+                                                        <ProgressBar Grid.Column="1" Maximum="{Binding TotalFileCount}" Value="{Binding RunningFileCount}"/>
+                                                    </Grid>
+                                                </StackPanel>
                                             </StackPanel>
                                         </Grid>
                                     </Grid>
