@@ -105,14 +105,11 @@
                                                 <StackPanel>
                                                     <TextBlock Text="{Binding Status}"/>
                                                 </StackPanel>
-                                                <StackPanel Visibility="{Binding CurrentFile, Converter={StaticResource StringLengthVisibleConverter}}">
-                                                    <TextBlock Text="{Binding CurrentFile}"/>
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding CurrentFile}" Visibility="{Binding CurrentFile, Converter={StaticResource StringLengthVisibleConverter}}"/>
                                                     <Grid>
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition Width="auto"/>
-                                                            <ColumnDefinition Width="*"/>
-                                                        </Grid.ColumnDefinitions>
-                                                        <TextBlock Grid.Column="0" Visibility="{Binding CurrentFile, Converter={StaticResource StringLengthVisibleConverter}}">
+                                                        <ProgressBar Background="{Binding PageBackgroundBrush}" Maximum="{Binding TotalFileCount}" Value="{Binding RunningFileCount}" IsIndeterminate="{Binding CurrentFile, Converter={StaticResource InverseStringLengthBoolConverter}}"/>
+                                                        <TextBlock Visibility="{Binding CurrentFile, Converter={StaticResource StringLengthVisibleConverter}}">
                                                             <TextBlock.Text>
                                                                 <MultiBinding StringFormat="{}({0} / {1})">
                                                                     <Binding Path="RunningFileCount"/>
@@ -120,7 +117,6 @@
                                                                 </MultiBinding>
                                                             </TextBlock.Text>
                                                         </TextBlock>
-                                                        <ProgressBar Grid.Column="1" Maximum="{Binding TotalFileCount}" Value="{Binding RunningFileCount}"/>
                                                     </Grid>
                                                 </StackPanel>
                                             </StackPanel>
