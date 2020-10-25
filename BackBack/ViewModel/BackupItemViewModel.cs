@@ -361,20 +361,38 @@ namespace BackBack.ViewModel
                         }
 
                         _logger.LogInformation("Removing files not found in source");
-                        var toDelete = new HashSet<string>();
-                        foreach (string file in FileUtils.Walk(target.FullName, FileSystemEnumeration.FilesOnly))
+                        Status = $"Removing items in target '{Destination}' not found in source {Source}";
+                        try
                         {
-                            if (!copiedFiles.ContainsKey(file))
+                            var toDelete = new HashSet<string>();
+                            foreach (string file in FileUtils.Walk(target.FullName, FileSystemEnumeration.FilesOnly))
                             {
-                                _logger.LogTrace("Adding '{file}' to deletion list", file);
-                                toDelete.Add(file);
+                                if (!copiedFiles.ContainsKey(file))
+                                {
+                                    _logger.LogTrace("Adding '{file}' to deletion list", file);
+                                    toDelete.Add(file);
+                                }
                             }
+                            TotalFileCount = toDelete.Count;
+                            Parallel.ForEach(toDelete, (file) =>
+                            {
+                                try
+                                {
+                                    CurrentFile = file;
+                                    _logger.LogTrace("Removing {file}", file);
+                                    File.Delete(file);
+                                }
+                                finally
+                                {
+                                    RunningFileCount++;
+                                }
+                            });
                         }
-                        Parallel.ForEach(toDelete, (file) =>
+                        finally
                         {
-                            _logger.LogTrace("Removing {file}", file);
-                            File.Delete(file);
-                        });
+                            TotalFileCount = 0;
+                            RunningFileCount = 0;
+                        }
                     }
                     else if (File.Exists(Source))
                     {
