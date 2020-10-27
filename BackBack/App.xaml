@@ -18,8 +18,6 @@
             </ResourceDictionary.MergedDictionaries>
 
             <converters:TriggerTypeConverter x:Key="TriggerTypeConverter"/>
-            <converters:StringLengthBoolConverter x:Key="StringLengthBoolConverter"/>
-            <converters:InverseStringLengthBoolConverter x:Key="InverseStringLengthBoolConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
