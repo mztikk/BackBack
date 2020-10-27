@@ -267,7 +267,6 @@ namespace BackBack.ViewModel
 
         public void Backup()
         {
-            using IDisposable scope = _logger.BeginScope($"{Name}: ");
             _logger.LogDebug("Starting backup of '{name}'", Name);
 
             if (Running)
@@ -335,14 +334,30 @@ namespace BackBack.ViewModel
                                     _logger.LogTrace("Target is '{file}'", newFile);
 
                                     copiedFiles.Add(newFile, true);
-                                    if (File.Exists(newFile) && FileUtils.AreEqual(file, newFile))
-                                    {
-                                        _logger.LogInformation("File: '{file}' already exists and is equal", newFile);
-                                        return;
-                                    }
 
-                                    _logger.LogTrace("Copying file: '{file}' to '{targetfile}'", file, newFile);
-                                    FileUtils.Copy(basePath, target, new FileInfo(file), true);
+                                    int retries = 0;
+                                    const int maxRetryCount = 5;
+                                    bool done = false;
+                                    while (retries < maxRetryCount && !done)
+                                    {
+                                        try
+                                        {
+                                            if (File.Exists(newFile) && FileUtils.AreEqual(file, newFile))
+                                            {
+                                                _logger.LogInformation("File: '{file}' already exists and is equal", newFile);
+                                                return;
+                                            }
+
+                                            _logger.LogTrace("Copying file: '{file}' to '{targetfile}'", file, newFile);
+                                            FileUtils.Copy(basePath, target, new FileInfo(file), true);
+                                            done = true;
+                                        }
+                                        catch (IOException) { }
+                                        finally
+                                        {
+                                            retries++;
+                                        }
+                                    }
                                 }
                                 catch (Exception e)
                                 {
