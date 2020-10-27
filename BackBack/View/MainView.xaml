@@ -31,6 +31,9 @@
                     <Button Style="{DynamicResource IconButton}" Command="{s:Action AddNewBackupItem}">
                         <Image Source="{StaticResource addDrawingImage}"/>
                     </Button>
+                    <Button Style="{DynamicResource IconButton}" Command="{s:Action RunAllAsync}" ToolTip="Run All">
+                        <Image Source="{StaticResource playDrawingImage}"/>
+                    </Button>
                 </StackPanel>
 
                 <Button Grid.Column="2" Style="{DynamicResource IconButton}" Command="{s:Action OpenSettings}">

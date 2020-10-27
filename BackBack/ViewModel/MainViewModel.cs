@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using BackBack.Models;
 using BackBack.Storage.Settings;
 using Microsoft.Extensions.Logging;
@@ -7,6 +9,7 @@ using RF.WPF.Extensions;
 using RF.WPF.MVVM;
 using RF.WPF.Navigation;
 using RF.WPF.UI.Interaction;
+using RFReborn.Extensions;
 using Stylet;
 using StyletIoC;
 
@@ -93,5 +96,14 @@ namespace BackBack.ViewModel
         }
 
         public void OpenSettings() => _navigationService.NavigateTo<SettingsViewModel>();
+
+        private IEnumerable<BackupItemViewModel> GetAllNoItemTrigger() => BackupItems.Where(x => x.TriggerInfo.Type != TriggerType.BackupItemTrigger);
+
+        public void RunAll() => GetAllNoItemTrigger().Call(x => x.Backup());
+
+        public void RunAllAsync() => Parallel.ForEach(GetAllNoItemTrigger(), async (x) =>
+        {
+            await x.BackupAsync();
+        });
     }
 }
