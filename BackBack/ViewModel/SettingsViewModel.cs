@@ -39,11 +39,11 @@ namespace BackBack.ViewModel
             set { _settingsDir = value; NotifyOfPropertyChange(); }
         }
 
-        private bool _closeToTray;
-        public bool CloseToTray
+        private bool _minimizeToTray;
+        public bool MinimizeToTray
         {
-            get => _closeToTray;
-            set { _closeToTray = value; NotifyOfPropertyChange(); }
+            get => _minimizeToTray;
+            set { _minimizeToTray = value; NotifyOfPropertyChange(); }
         }
 
         private bool _startWithWindows;

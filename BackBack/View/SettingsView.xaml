@@ -48,8 +48,8 @@
                     </CheckBox>
                 </StackPanel>
                 <StackPanel Margin="{StaticResource PanelMargin}">
-                    <CheckBox IsChecked="{Binding CloseToTray}">
-                        <TextBlock Style="{DynamicResource TextLabel}" Text="Closing minimizes to Tray"/>
+                    <CheckBox IsChecked="{Binding MinimizeToTray}">
+                        <TextBlock Style="{DynamicResource TextLabel}" Text="Minimize to Tray"/>
                     </CheckBox>
                 </StackPanel>
             </StackPanel>

@@ -81,23 +81,24 @@ namespace BackBack.View
             Activate();
         }
 
-        private void ViewBase_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            bool closeToTray = _settings.GetValue<bool>("CloseToTray");
-            _logger.LogDebug("CloseToTray is '{value}'", closeToTray);
-            if (!_forceClose && closeToTray)
-            {
-                _prevState = WindowState;
-                e.Cancel = true;
-                ToTray();
-            }
-        }
-
         private void ToTray()
         {
             _logger.LogDebug("Minimizing window to tray");
             WindowState = WindowState.Minimized;
             Hide();
+        }
+
+        protected override void OnStateChanged(EventArgs e)
+        {
+            bool MinimizeToTray = _settings.GetValue<bool>("MinimizeToTray");
+            _logger.LogDebug("MinimizeToTray is '{value}'", MinimizeToTray);
+
+            if (WindowState == WindowState.Minimized && MinimizeToTray)
+            {
+                ToTray();
+            }
+
+            base.OnStateChanged(e);
         }
     }
 }

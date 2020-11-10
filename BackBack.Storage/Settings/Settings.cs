@@ -12,7 +12,7 @@ namespace BackBack.Storage.Settings
         private static readonly Dictionary<string, string> s_defaultValues = new Dictionary<string, string>()
         {
             { "StartWithWindows", "True" },
-            { "CloseToTray", "True" }
+            { "MinimizeToTray", "True" }
         };
 
         public Settings(Func<Type, ILogger> loggerCreator) : base(loggerCreator(typeof(Settings))) { }

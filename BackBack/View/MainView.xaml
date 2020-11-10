@@ -7,7 +7,7 @@
     xmlns:local="clr-namespace:BackBack.View"
     xmlns:base="clr-namespace:RF.WPF.MVVM;assembly=RF.WPF"
     xmlns:vm="clr-namespace:BackBack.ViewModel"
-    xmlns:v="clr-namespace:BackBack.View" x:TypeArguments="vm:MainViewModel" Title="{Binding Title}" Style="{DynamicResource RF.Window}" Closing="ViewBase_Closing">
+    xmlns:v="clr-namespace:BackBack.View" x:TypeArguments="vm:MainViewModel" Title="{Binding Title}" Style="{DynamicResource RF.Window}">
     <Grid>
         <Grid.Resources>
             <Thickness x:Key="PanelPadding">6</Thickness>
