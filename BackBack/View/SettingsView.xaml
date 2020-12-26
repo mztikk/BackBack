@@ -14,6 +14,11 @@
         Style="{DynamicResource RF.Window}"
         >
     <Grid>
+        <Grid.Resources>
+            <Thickness x:Key="PanelPadding">6</Thickness>
+            <Thickness x:Key="WindowPadding">6</Thickness>
+        </Grid.Resources>
+        
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
@@ -42,16 +47,48 @@
                     Text="Settings Directory"/>
                     <TextBox Style="{DynamicResource SelectableLabel}" Text="{Binding SettingsDir}"/>
                 </StackPanel>
-                <StackPanel Margin="{StaticResource PanelMargin}">
-                    <CheckBox IsChecked="{Binding StartWithWindows}">
-                        <TextBlock Style="{DynamicResource TextLabel}" Text="Start with Windows"/>
-                    </CheckBox>
-                </StackPanel>
-                <StackPanel Margin="{StaticResource PanelMargin}">
-                    <CheckBox IsChecked="{Binding MinimizeToTray}">
-                        <TextBlock Style="{DynamicResource TextLabel}" Text="Minimize to Tray"/>
-                    </CheckBox>
-                </StackPanel>
+                
+                <TabControl Style="{DynamicResource Tab}">
+                    <TabItem Style="{DynamicResource TabHeader}" Header="General Settings">
+                        <StackPanel>
+                            <StackPanel Margin="{StaticResource PanelMargin}">
+                                <CheckBox IsChecked="{Binding StartWithWindows}">
+                                    <TextBlock Style="{DynamicResource TextLabel}" Text="Start with Windows"/>
+                                </CheckBox>
+                            </StackPanel>
+                            <StackPanel Margin="{StaticResource PanelMargin}">
+                                <CheckBox IsChecked="{Binding MinimizeToTray}">
+                                    <TextBlock Style="{DynamicResource TextLabel}" Text="Minimize to Tray"/>
+                                </CheckBox>
+                            </StackPanel>
+                        </StackPanel>
+                    </TabItem>
+
+
+                    <TabItem Style="{DynamicResource TabHeader}" Header="Account Settings">
+                        <ScrollViewer Grid.Row="1" Margin="{DynamicResource WindowPadding}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                            <VirtualizingStackPanel>
+                                <ItemsControl ItemsSource="{Binding Accounts}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Margin="{DynamicResource PanelPadding}">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Border Style="{DynamicResource CardBorder}">
+                                                    <StackPanel Margin="{DynamicResource PanelPadding}">
+                                                        <TextBox Style="{DynamicResource SelectableLabel}" Text="{Binding Name, StringFormat={}Name: {0}}"/>
+                                                        <TextBox Style="{DynamicResource SelectableLabel}" Text="{Binding Login, StringFormat={}Login: {0}}"/>
+                                                    </StackPanel>
+                                                </Border>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </VirtualizingStackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+                </TabControl>
             </StackPanel>
         </Grid>
 
