@@ -64,6 +64,8 @@ namespace BackBack
 
             builder.Bind<Func<Type, ILogger>>().ToInstance(_createLogger);
 
+            builder.Bind<IEntropy>().ToInstance(new AssemblyNameEntropy());
+
             // Configure the IoC container in here
             foreach (StyletIoCModule item in s_iocModules)
             {

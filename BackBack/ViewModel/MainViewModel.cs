@@ -22,7 +22,11 @@ namespace BackBack.ViewModel
         private readonly BackupData _backupData;
         private readonly IWindowManager _windowManager;
 
-        public MainViewModel(IContainer container, INavigationService navigationService, BackupData backupData, Func<Type, ILogger> loggerFactory, IWindowManager windowManager) : base(navigationService)
+        public MainViewModel(IContainer container,
+                             INavigationService navigationService,
+                             BackupData backupData,
+                             Func<Type, ILogger> loggerFactory,
+                             IWindowManager windowManager) : base(navigationService)
         {
             Title = ApplicationInfo.s_appName;
 

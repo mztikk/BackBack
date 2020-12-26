@@ -23,7 +23,7 @@ namespace BackBack.Storage
             foreach (Type type in GetAllTypes())
             {
                 string? baseName = type.BaseType?.FullName;
-                if (baseName?.StartsWith("RF.WPF.Storage`") == true)
+                if (baseName?.StartsWith("RF.WPF.Storage`") == true || baseName?.StartsWith("RF.WPF.EncryptedStorage`") == true)
                 {
                     Bind(type).ToSelf().InSingletonScope();
                     _storageTypes.Add(type);

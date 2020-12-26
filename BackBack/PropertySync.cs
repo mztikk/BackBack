@@ -5,6 +5,7 @@ using RFReborn.Internals;
 
 namespace BackBack
 {
+    //[Obsolete("Use SourceGenerator", true)]
     internal static class PropertySync
     {
         internal static void Sync<sourceType, targetType>(sourceType source, targetType target, HashSet<string>? ignores)
