@@ -7,8 +7,8 @@
         xmlns:local="clr-namespace:BackBack.View"
         xmlns:base="clr-namespace:RF.WPF.MVVM;assembly=RF.WPF"
         xmlns:vm="clr-namespace:BackBack.ViewModel"
-        xmlns:v="clr-namespace:BackBack.View"
-        x:TypeArguments="vm:SettingsViewModel"
+        xmlns:v="clr-namespace:BackBack.View" xmlns:resources="clr-namespace:BackBack.Resources"
+               x:TypeArguments="vm:SettingsViewModel"
         mc:Ignorable="d"
         Title="{Binding Title}"
         Style="{DynamicResource RF.Window}"
@@ -79,6 +79,7 @@
                                                     <StackPanel Margin="{DynamicResource PanelPadding}">
                                                         <TextBox Style="{DynamicResource SelectableLabel}" Text="{Binding Name, StringFormat={}Name: {0}}"/>
                                                         <TextBox Style="{DynamicResource SelectableLabel}" Text="{Binding Login, StringFormat={}Login: {0}}"/>
+                                                        <resources:MaskedTextBox Style="{DynamicResource TextEntry}"></resources:MaskedTextBox>
                                                     </StackPanel>
                                                 </Border>
                                             </Grid>
