@@ -5,6 +5,7 @@
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>Resources\app_icon.ico</ApplicationIcon>
+    <IncludePackageReferencesDuringMarkupCompilation>true</IncludePackageReferencesDuringMarkupCompilation>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\PropertySyncGenerator\PropertySyncGenerator\PropertySyncGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\BackBack.LUA\BackBack.LUA.csproj" />
     <ProjectReference Include="..\BackBack.Models\BackBack.Models.csproj" />
     <ProjectReference Include="..\BackBack.Storage\BackBack.Storage.csproj" />

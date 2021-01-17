@@ -28,7 +28,7 @@ namespace BackBack.ViewModel
             SettingsDir = _settings.GetSettingsDir();
 
             _logger.LogDebug("Syncing settings properties");
-            PropertySync.Sync(_settings.Data, this, new HashSet<string>());
+            PropertySync.Sync(_settings.Data, this);
         }
 
         private string _settingsDir;
@@ -60,7 +60,7 @@ namespace BackBack.ViewModel
             _logger.LogTrace("Saving settings");
 
             _logger.LogDebug("Syncing settings properties");
-            PropertySync.Sync(this, _settings.Data, new HashSet<string>());
+            PropertySync.Sync(this, _settings.Data);
 
             _logger.LogDebug("Saving settings data");
             _settings.Save();

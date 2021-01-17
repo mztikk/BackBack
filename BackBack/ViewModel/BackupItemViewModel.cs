@@ -54,7 +54,7 @@ namespace BackBack.ViewModel
             base.OnNavigatedTo();
 
             _logger.LogDebug("Syncing Properties with {type}: '{name}'", BackupItem.TypeName(), BackupItem.Name);
-            PropertySync.Sync(BackupItem, this, null);
+            PropertySync.Sync(BackupItem, this);
         }
 
         public BackupItem BackupItem { get; set; }
