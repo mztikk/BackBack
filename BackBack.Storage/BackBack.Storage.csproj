@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
-    <PackageReference Include="RF.WPF" Version="1.2.0" />
+    <PackageReference Include="RF.WPF" Version="1.2.1" />
     <PackageReference Include="RFReborn" Version="1.5.5" />
     <PackageReference Include="RLog" Version="1.0.1" />
   </ItemGroup>
