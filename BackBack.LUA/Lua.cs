@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -7,6 +8,7 @@ using System.Reflection;
 using System.Text;
 using BackBack.Models;
 using BackBack.Storage.Settings;
+using NLua;
 using RFReborn.Files;
 
 namespace BackBack.LUA
@@ -17,6 +19,8 @@ namespace BackBack.LUA
         private bool _disposedValue;
 
         public readonly NLua.Lua NLua;
+
+        private readonly ConcurrentDictionary<string, LuaTable> _namedTables = new ConcurrentDictionary<string, LuaTable>();
 
         public Lua(Settings settings)
         {
@@ -35,6 +39,7 @@ namespace BackBack.LUA
 
             NLua.RegisterFunction(nameof(Timestamp), GetStaticMethod(nameof(Timestamp)));
             NLua.RegisterFunction("Zip", GetStaticMethod(typeof(LuaZip), "Zip"));
+            NLua.RegisterFunction("debugprint", GetStaticMethod("debugprint"));
             //NLua.RegisterFunction("CombinePath", GetStaticMethods(typeof(Path), "Combine").FirstOrDefault(x => x.GetParameters().Any(y => y.para)));
             foreach (MethodInfo item in GetStaticMethods(typeof(Path), "Combine"))
             {
@@ -65,11 +70,28 @@ namespace BackBack.LUA
 
         public void SetValue(string name, object value) => NLua[name] = value;
 
-        public object[] Run(string lua) => NLua.DoString(lua);
+        public object[] Run(string lua, string name)
+        {
+            LuaFunction f = NLua.LoadString(lua, null);
+            return f.Call(name, GetNamedTable(name));
+        }
+
+        private LuaTable CreateTable()
+        {
+            NLua.State.CreateTable(0, 0);
+            return NLua.Pop() as LuaTable;
+        }
+
+        public LuaTable GetNamedTable(string name) => _namedTables.GetOrAdd(name, CreateTable());
 
         protected IEnumerable<MethodInfo> GetStaticMethods(Type type, string name) => type.GetMethods(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static).Where(x => x.Name == name);
         protected MethodInfo GetStaticMethod(Type type, string name) => type.GetMethod(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
         protected MethodInfo GetStaticMethod(string name) => GetStaticMethod(typeof(Lua), name);
+
+        private static void debugprint(params object[] args)
+        {
+            Debug.WriteLine(string.Join("\t", args));
+        }
 
         protected static string Timestamp(string format) => DateTime.Now.ToString(format);
 

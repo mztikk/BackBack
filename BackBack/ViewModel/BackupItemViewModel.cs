@@ -464,7 +464,10 @@ namespace BackBack.ViewModel
                     lua.SetValuesFromBackupItem(BackupItem);
                     _logger.LogTrace("PostCompletionScript is: {script}", PostCompletionScript);
                     _logger.LogDebug("Running {name}", nameof(PostCompletionScript));
-                    lua.Run(PostCompletionScript ?? string.Empty);
+                    if (!string.IsNullOrWhiteSpace(PostCompletionScript))
+                    {
+                        lua.Run(PostCompletionScript, Name);
+                    }
                 }
                 catch (Exception e)
                 {
