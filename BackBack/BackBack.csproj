@@ -17,6 +17,7 @@
     <PackageReference Include="Cronos" Version="0.7.0" />
     <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="1.0.8" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
+    <PackageReference Include="PropertySyncGenerator" Version="0.1.0.2" />
     <PackageReference Include="RF.WPF" Version="1.2.0" />
     <PackageReference Include="RFReborn" Version="1.5.5" />
     <PackageReference Include="RLog" Version="1.0.1" />
@@ -24,7 +25,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\PropertySyncGenerator\PropertySyncGenerator\PropertySyncGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\BackBack.LUA\BackBack.LUA.csproj" />
     <ProjectReference Include="..\BackBack.Models\BackBack.Models.csproj" />
     <ProjectReference Include="..\BackBack.Storage\BackBack.Storage.csproj" />
