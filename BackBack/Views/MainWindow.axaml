@@ -1,43 +1,47 @@
 <Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:BackBack.ViewModels"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Avalonia.Svg.Skia"
-        xmlns:views="clr-namespace:BackBack.Views;assembly=BackBack"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="BackBack.Views.MainWindow"
-        Icon="/Assets/avalonia-logo.ico"
-        Title="BackBack"
-        ExtendClientAreaToDecorationsHint="True"
-        ExtendClientAreaChromeHints="PreferSystemChrome"
-        ExtendClientAreaTitleBarHeightHint="-1"
-        TransparencyLevelHint="AcrylicBlur">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:BackBack.ViewModels"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Avalonia.Svg.Skia"
+    xmlns:views="clr-namespace:BackBack.Views;assembly=BackBack"
+    mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+    x:Class="BackBack.Views.MainWindow"
+    Icon="/Assets/avalonia-logo.ico"
+    Title="BackBack"
+    ExtendClientAreaToDecorationsHint="True"
+    ExtendClientAreaChromeHints="PreferSystemChrome"
+    ExtendClientAreaTitleBarHeightHint="-1"
+    TransparencyLevelHint="AcrylicBlur">
 
     <Design.DataContext>
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <Panel ClipToBounds="True">
-        <ExperimentalAcrylicBorder IsHitTestVisible="False">
-            <ExperimentalAcrylicBorder.Material>
-                <ExperimentalAcrylicMaterial
-                    BackgroundSource="Digger"
-                    TintColor="Black"
-                    TintOpacity="1"
-                    MaterialOpacity="0.65" />
-            </ExperimentalAcrylicBorder.Material>
-        </ExperimentalAcrylicBorder>
-
+    <Panel>
+        <ExperimentalAcrylicBorder IsHitTestVisible="False" Material="{DynamicResource ViewBackgroundMaterial}"/>
         <StackPanel>
-        <StackPanel Margin="8" Spacing="4" Orientation="Horizontal">
-            <Image Height="24" Source="{DynamicResource hdd3DrawingImage}"/>
-            <TextBlock Text="{Binding TitleText}"/>
-        </StackPanel>
-        
-        <StackPanel Margin="40">
-            <views:BackupItemsView Content="{Binding BackupItems}"/>
-        </StackPanel>
+            <Panel>
+                <ExperimentalAcrylicBorder IsHitTestVisible="False" Material="{DynamicResource ElementBackgroundMaterial}"/>
+                <StackPanel Margin="8">
+                <StackPanel Spacing="4" Orientation="Horizontal">
+                    <Image Height="24" Source="{DynamicResource hdd3DrawingImage}"/>
+                    <TextBlock Text="{Binding TitleText}"/>
+                </StackPanel>
+                <StackPanel Margin="0,8,0,0" Spacing="4" Orientation="Horizontal">
+                    <Button>
+                        <PathIcon Data="{DynamicResource add_regular}"/>
+                    </Button>
+                    <Button>
+                        <PathIcon Data="{DynamicResource play_regular}"/>
+                    </Button>
+                </StackPanel>
+                </StackPanel>
+            </Panel>
+
+            <StackPanel Margin="40">
+                <views:BackupItemsView Content="{Binding BackupItems}"/>
+            </StackPanel>
         </StackPanel>
     </Panel>
 </Window>

@@ -9,6 +9,9 @@
 
     <Application.Resources>
         <Color x:Key="ViewBackground">#2D2D30</Color>
+        <ExperimentalAcrylicMaterial x:Key="ViewBackgroundMaterial" BackgroundSource="Digger" TintColor="Black" TintOpacity="1" MaterialOpacity="0.65"/>
+        <ExperimentalAcrylicMaterial x:Key="ElementBackgroundMaterial" BackgroundSource="Digger" TintColor="Black" TintOpacity="1" MaterialOpacity="0.85"/>
+        <ExperimentalAcrylicMaterial x:Key="SelectedElementBackgroundMaterial" BackgroundSource="Digger" TintColor="Blue" TintOpacity="0.5" MaterialOpacity="1"/>
     </Application.Resources>
 
     <Application.Styles>

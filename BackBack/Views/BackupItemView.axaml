@@ -5,10 +5,16 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BackBack.Views.BackupItemView">
 
-    <StackPanel Margin="8" Background="Gray">
-    <StackPanel Margin="8">
+    <Panel Margin="8" PointerPressed="PointerPressed">
+        <ExperimentalAcrylicBorder IsHitTestVisible="True" CornerRadius="4" Material="{DynamicResource ElementBackgroundMaterial}"/>
+        <ExperimentalAcrylicBorder IsHitTestVisible="True" IsVisible="{Binding Selected}" CornerRadius="4" Material="{DynamicResource SelectedElementBackgroundMaterial}"/>
+    <StackPanel Margin="8" IsHitTestVisible="True">
+
         <!--<PathIcon Data="{StaticResource accept}"/>-->
-        <TextBlock Text="{Binding Name}"/>
+        <StackPanel Orientation="Horizontal" Spacing="4">
+            <PathIcon Data="{DynamicResource checkmark_regular}" IsVisible="{Binding Selected, Mode=TwoWay}"/>
+            <TextBlock Text="{Binding Name}"/>
+        </StackPanel>
         <!--<TextBlock Text="{Binding Source}"/>-->
         <!--<TextBlock Text="{Binding Target}"/>-->
         <TextBlock Margin="8">
@@ -23,13 +29,13 @@
             <Button>
                 <PathIcon Data="{DynamicResource edit_settings_regular}"/>
             </Button>
-            <Button>
+            <!--<Button>
                 <PathIcon Data="{DynamicResource backup2}"/>
-            </Button>
+            </Button>-->
             <Button>
                 <PathIcon Data="{DynamicResource delete_forever_regular}"/>
             </Button>
         </StackPanel>
     </StackPanel>
-    </StackPanel>
+    </Panel>
 </UserControl>
