@@ -39,7 +39,7 @@
                 </StackPanel>
             </Panel>
 
-            <StackPanel Margin="40">
+            <StackPanel Margin="8">
                 <views:BackupItemsView Content="{Binding BackupItems}"/>
             </StackPanel>
         </StackPanel>
