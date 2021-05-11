@@ -1,8 +1,11 @@
+using ReactiveUI.Fody.Helpers;
+
 namespace BackBack.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        public string Greeting => "Welcome to Avalonia!";
+        [Reactive]
+        public string? TitleText { get; set; } = "BackBack";
 
         public BackupItemsViewModel BackupItems { get; set; } = new();
     }

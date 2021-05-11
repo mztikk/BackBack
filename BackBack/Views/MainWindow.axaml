@@ -8,13 +8,17 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="BackBack.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
-        Title="BackBack">
+        Title="BackBack"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaChromeHints="PreferSystemChrome"
+        ExtendClientAreaTitleBarHeightHint="-1"
+        TransparencyLevelHint="AcrylicBlur">
 
     <Design.DataContext>
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <Panel>
+    <Panel ClipToBounds="True">
         <ExperimentalAcrylicBorder IsHitTestVisible="False">
             <ExperimentalAcrylicBorder.Material>
                 <ExperimentalAcrylicMaterial
@@ -25,8 +29,15 @@
             </ExperimentalAcrylicBorder.Material>
         </ExperimentalAcrylicBorder>
 
-        <Panel Margin="40">
+        <StackPanel>
+        <StackPanel Margin="8" Spacing="4" Orientation="Horizontal">
+            <Image Height="24" Source="{DynamicResource hdd3DrawingImage}"/>
+            <TextBlock Text="{Binding TitleText}"/>
+        </StackPanel>
+        
+        <StackPanel Margin="40">
             <views:BackupItemsView Content="{Binding BackupItems}"/>
-        </Panel>
+        </StackPanel>
+        </StackPanel>
     </Panel>
 </Window>

@@ -8,6 +8,7 @@
     </Application.DataTemplates>
 
     <Application.Resources>
+        <Color x:Key="ViewBackground">#2D2D30</Color>
     </Application.Resources>
 
     <Application.Styles>
