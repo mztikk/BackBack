@@ -4,14 +4,11 @@ using Avalonia.Markup.Xaml;
 
 namespace BackBack.Views
 {
-    public partial class MainWindow : Window
+    public partial class BackupItemsView : UserControl
     {
-        public MainWindow()
+        public BackupItemsView()
         {
             InitializeComponent();
-#if DEBUG
-            this.AttachDevTools();
-#endif
         }
 
         private void InitializeComponent()

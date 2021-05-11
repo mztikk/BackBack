@@ -3,6 +3,8 @@
         xmlns:vm="using:BackBack.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Avalonia.Svg.Skia"
+        xmlns:views="clr-namespace:BackBack.Views;assembly=BackBack"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="BackBack.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
@@ -12,6 +14,19 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    <Panel>
+        <ExperimentalAcrylicBorder IsHitTestVisible="False">
+            <ExperimentalAcrylicBorder.Material>
+                <ExperimentalAcrylicMaterial
+                    BackgroundSource="Digger"
+                    TintColor="Black"
+                    TintOpacity="1"
+                    MaterialOpacity="0.65" />
+            </ExperimentalAcrylicBorder.Material>
+        </ExperimentalAcrylicBorder>
 
+        <Panel Margin="40">
+            <views:BackupItemsView Content="{Binding BackupItems}"/>
+        </Panel>
+    </Panel>
 </Window>

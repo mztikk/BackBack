@@ -1,0 +1,35 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BackBack.Views.BackupItemView">
+
+    <StackPanel>
+    <StackPanel Margin="8">
+        <!--<PathIcon Data="{StaticResource accept}"/>-->
+        <TextBlock Text="{Binding Name}"/>
+        <!--<TextBlock Text="{Binding Source}"/>-->
+        <!--<TextBlock Text="{Binding Target}"/>-->
+        <TextBlock Margin="8">
+            <TextBlock.Text>
+                <MultiBinding StringFormat="{}{0} -> {1}">
+                    <Binding Path="Source"/>
+                    <Binding Path="Target"/>
+                </MultiBinding>
+            </TextBlock.Text>
+        </TextBlock>
+        <StackPanel Margin="0,4" Spacing="4" Orientation="Horizontal">
+            <Button>
+                <PathIcon Data="{DynamicResource edit_settings_regular}"/>
+            </Button>
+            <Button>
+                <PathIcon Data="{DynamicResource backup2}"/>
+            </Button>
+            <Button>
+                <PathIcon Data="{DynamicResource delete_forever_regular}"/>
+            </Button>
+        </StackPanel>
+    </StackPanel>
+    </StackPanel>
+</UserControl>

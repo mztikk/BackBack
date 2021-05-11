@@ -1,22 +1,17 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="using:BackBack"
+             xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Avalonia.Svg.Skia"
              x:Class="BackBack.App">
     <Application.DataTemplates>
         <local:ViewLocator/>
     </Application.DataTemplates>
 
+    <Application.Resources>
+    </Application.Resources>
+
     <Application.Styles>
         <FluentTheme Mode="Dark"/>
+        <StyleInclude Source="avares://BackBack/Assets/Icons.axaml"/>
     </Application.Styles>
-
-    <Application.Resources>
-        <Color x:Key="SystemAltHighColor">#FF282828</Color>
-
-        <Color x:Key="SystemErrorTextColor">#FF0033</Color>
-
-        <SolidColorBrush x:Key="SystemControlErrorTextForegroundBrush" Color="{DynamicResource SystemErrorTextColor}"/>
-
-        <SolidColorBrush x:Key="SystemControlBackgroundAltHighBrush" Color="{DynamicResource SystemAltHighColor}" />
-    </Application.Resources>
 </Application>
