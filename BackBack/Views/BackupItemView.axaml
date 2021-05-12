@@ -18,11 +18,11 @@
         </LinearGradientBrush>
     </UserControl.Resources>
 
-    <Panel Margin="8" PointerPressed="PointerPressed" PointerEnter="PointerEnter" PointerLeave="PointerLeave">
+    <Panel PointerEnter="PointerEnter" PointerLeave="PointerLeave">
+
+    <Panel Margin="14" PointerPressed="PointerPressed">
         <ExperimentalAcrylicBorder IsHitTestVisible="True" CornerRadius="4" Material="{DynamicResource ElementBackgroundMaterial}"/>
-        <Button Width="48" Height="48" Classes="round" HorizontalAlignment="Right" VerticalAlignment="Top" IsVisible="{Binding Hovered}">
-            <PathIcon Data="{DynamicResource edit_settings_regular}"/>
-        </Button>
+        
         <Border BorderThickness="{Binding Selected, Converter={StaticResource boolToThicknessConverter}, ConverterParameter=2}" BorderBrush="{DynamicResource BlueGradient}" CornerRadius="4" Padding="4">
         <DockPanel Margin="8" IsHitTestVisible="True" MinHeight="80" MinWidth="400">
 
@@ -37,5 +37,10 @@
             </StackPanel>
     </DockPanel>
         </Border>
+    </Panel>
+
+        <Button Width="48" Height="48" Classes="round" HorizontalAlignment="Right" VerticalAlignment="Top" IsVisible="{Binding Hovered}">
+            <PathIcon Data="{DynamicResource edit_settings_regular}"/>
+        </Button>
     </Panel>
 </UserControl>
