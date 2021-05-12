@@ -20,6 +20,8 @@ namespace BackBack.ViewModels
         [Reactive]
         public bool Selected { get; set; }
         [Reactive]
+        public bool Hovered { get; set; }
+        [Reactive]
         public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> PressedCommand { get; set; }
 
         private void Pressed() => System.Console.WriteLine("pressed");

@@ -18,5 +18,20 @@ namespace BackBack.Views
                 vm.Selected = !vm.Selected;
             }
         }
+
+        public void PointerEnter(object sender, PointerEventArgs e)
+        {
+            if (DataContext is BackupItemViewModel vm)
+            {
+                vm.Hovered = true;
+            }
+        }
+        public void PointerLeave(object sender, PointerEventArgs e)
+        {
+            if (DataContext is BackupItemViewModel vm)
+            {
+                vm.Hovered = false;
+            }
+        }
     }
 }
