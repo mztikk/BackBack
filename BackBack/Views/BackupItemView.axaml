@@ -14,7 +14,7 @@
 
     <Panel>
 
-    <Panel Margin="14" PointerPressed="PointerPressed">
+    <Panel Margin="14" PointerPressed="PointerPressed_Event">
         <ExperimentalAcrylicBorder IsHitTestVisible="True" CornerRadius="4" Material="{DynamicResource ElementBackgroundMaterial}"/>
         
         <Border BorderThickness="{Binding Selected, Converter={StaticResource boolToThicknessConverter}, ConverterParameter=2}" BorderBrush="{DynamicResource BlueGradient}" CornerRadius="4" Padding="4">
