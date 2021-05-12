@@ -2,40 +2,37 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:BackBack;assembly=BackBack"
+             xmlns:converters="clr-namespace:BackBack.Converters;assembly=BackBack"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BackBack.Views.BackupItemView">
 
+    <UserControl.Resources>
+        <converters:BoolToIntConverter x:Key="boolToIntConverter"/>
+        <converters:BoolToThicknessConverter x:Key="boolToThicknessConverter"/>
+        <LinearGradientBrush x:Key="BlueGradient" StartPoint="100%,0%" EndPoint="100%,100%">
+            <LinearGradientBrush.GradientStops>
+                <GradientStop Offset="0" Color="#07BAFF"/>
+                <GradientStop Offset="1" Color="#4768F9"/>
+            </LinearGradientBrush.GradientStops>
+        </LinearGradientBrush>
+    </UserControl.Resources>
+
     <Panel Margin="8" PointerPressed="PointerPressed">
         <ExperimentalAcrylicBorder IsHitTestVisible="True" CornerRadius="4" Material="{DynamicResource ElementBackgroundMaterial}"/>
-        <ExperimentalAcrylicBorder IsHitTestVisible="True" IsVisible="{Binding Selected}" CornerRadius="4" Material="{DynamicResource SelectedElementBackgroundMaterial}"/>
-    <StackPanel Margin="8" IsHitTestVisible="True">
+        <Border BorderThickness="{Binding Selected, Converter={StaticResource boolToThicknessConverter}, ConverterParameter=2}" BorderBrush="{DynamicResource BlueGradient}" CornerRadius="4" Padding="4">
+        <DockPanel Margin="8" IsHitTestVisible="True" MinHeight="80" MinWidth="400">
 
-        <!--<PathIcon Data="{StaticResource accept}"/>-->
-        <StackPanel Orientation="Horizontal" Spacing="4">
-            <PathIcon Data="{DynamicResource checkmark_regular}" IsVisible="{Binding Selected, Mode=TwoWay}"/>
+        <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Top" DockPanel.Dock="Top">
             <TextBlock Text="{Binding Name}"/>
+            <PathIcon Data="{DynamicResource checkmark_regular}" IsVisible="{Binding Selected, Mode=TwoWay}"/>
         </StackPanel>
-        <!--<TextBlock Text="{Binding Source}"/>-->
-        <!--<TextBlock Text="{Binding Target}"/>-->
-        <TextBlock Margin="8">
-            <TextBlock.Text>
-                <MultiBinding StringFormat="{}{0} -> {1}">
-                    <Binding Path="Source"/>
-                    <Binding Path="Target"/>
-                </MultiBinding>
-            </TextBlock.Text>
-        </TextBlock>
-        <StackPanel Margin="0,4" Spacing="4" Orientation="Horizontal">
-            <Button>
-                <PathIcon Data="{DynamicResource edit_settings_regular}"/>
-            </Button>
-            <!--<Button>
-                <PathIcon Data="{DynamicResource backup2}"/>
-            </Button>-->
-            <Button>
-                <PathIcon Data="{DynamicResource delete_forever_regular}"/>
-            </Button>
-        </StackPanel>
-    </StackPanel>
+            <StackPanel VerticalAlignment="Bottom" DockPanel.Dock="Bottom" Margin="0,32,0,0" Spacing="8">
+                <TextBlock Text="{Binding Source}"/>
+                <TextBlock Text="↓"/>
+                <TextBlock Text="{Binding Target}"/>
+            </StackPanel>
+    </DockPanel>
+        </Border>
     </Panel>
 </UserControl>
