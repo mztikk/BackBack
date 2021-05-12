@@ -24,16 +24,19 @@
             <Panel>
                 <ExperimentalAcrylicBorder IsHitTestVisible="False" Material="{DynamicResource ElementBackgroundMaterial}"/>
                 <StackPanel Margin="8">
-                <StackPanel Spacing="4" Orientation="Horizontal">
-                    <Image Height="24" Source="{DynamicResource hdd3DrawingImage}"/>
+                <StackPanel Spacing="4" Orientation="Horizontal" HorizontalAlignment="Center" IsHitTestVisible="False">
+                    <!--<Image Height="24" Source="{DynamicResource hdd3DrawingImage}"/>-->
                     <TextBlock Text="{Binding TitleText}"/>
                 </StackPanel>
-                <StackPanel Margin="0,8,0,0" Spacing="4" Orientation="Horizontal">
+                <StackPanel Margin="0,8,0,0" Spacing="12" Orientation="Horizontal">
                     <Button>
                         <PathIcon Data="{DynamicResource add_regular}"/>
                     </Button>
                     <Button>
                         <PathIcon Data="{DynamicResource play_regular}"/>
+                    </Button>
+                    <Button>
+                        <PathIcon Data="{DynamicResource delete_forever_regular}"/>
                     </Button>
                 </StackPanel>
                 </StackPanel>
