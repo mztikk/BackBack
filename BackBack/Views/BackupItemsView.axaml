@@ -5,16 +5,18 @@
              xmlns:views="clr-namespace:BackBack.Views;assembly=BackBack"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BackBack.Views.BackupItemsView">
-    <!--<StackPanel>
-        <TextBlock Text="{Binding Name}"/>
-    </StackPanel>-->
-    <DockPanel>
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
         <ItemsControl Items="{Binding Items}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <views:BackupItemView Content="{Binding}"/>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
         </ItemsControl>
-    </DockPanel>
+    </ScrollViewer>
 </UserControl>

@@ -20,8 +20,13 @@
 
     <Panel>
         <ExperimentalAcrylicBorder IsHitTestVisible="False" Material="{DynamicResource ViewBackgroundMaterial}"/>
-        <StackPanel>
-            <Panel>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Panel Grid.Row="0">
                 <ExperimentalAcrylicBorder IsHitTestVisible="False" Material="{DynamicResource ElementBackgroundMaterial}"/>
                 <StackPanel Margin="8">
                 <StackPanel Spacing="4" Orientation="Horizontal" HorizontalAlignment="Center" IsHitTestVisible="False">
@@ -42,9 +47,9 @@
                 </StackPanel>
             </Panel>
 
-            <StackPanel Margin="8">
+            <Grid Grid.Row="1" Margin="8">
                 <views:BackupItemsView Content="{Binding BackupItems}"/>
-            </StackPanel>
-        </StackPanel>
+            </Grid>
+        </Grid>
     </Panel>
 </Window>
