@@ -5,6 +5,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Avalonia.Svg.Skia"
     xmlns:views="clr-namespace:BackBack.Views;assembly=BackBack"
+    xmlns:converters="clr-namespace:BackBack.Converters;assembly=BackBack"
+    xmlns:interop="clr-namespace:System.Runtime.InteropServices;assembly=System.Runtime.InteropServices.RuntimeInformation"
     mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
     x:Class="BackBack.Views.MainWindow"
     Icon="/Assets/avalonia-logo.ico"
@@ -13,11 +15,18 @@
     ExtendClientAreaChromeHints="PreferSystemChrome"
     ExtendClientAreaTitleBarHeightHint="-1"
     TransparencyLevelHint="AcrylicBlur"
+    Background="Transparent"
     MinWidth="500" MinHeight="200">
 
     <Design.DataContext>
         <vm:MainWindowViewModel/>
     </Design.DataContext>
+
+    <Window.Resources>
+        <converters:PlatformToBoolConverter x:Key="platformToBoolConverter"/>
+        <converters:ReversePlatformToBoolConverter x:Key="reversePlatformToBoolConverter"/>
+    </Window.Resources>
+
 
     <Panel>
         <ExperimentalAcrylicBorder IsHitTestVisible="False" Material="{DynamicResource ViewBackgroundMaterial}"/>
@@ -32,7 +41,9 @@
                 <StackPanel Margin="8">
                 <StackPanel Spacing="4" Orientation="Horizontal" HorizontalAlignment="Center" IsHitTestVisible="False">
                     <!--<Image Height="24" Source="{DynamicResource hdd3DrawingImage}"/>-->
-                    <TextBlock Text="{Binding TitleText}"/>
+                    
+                    <!--Dont display title on linux since ExtendClientAreaToDecorationsHint doesnt work there-->
+                    <TextBlock Text="{Binding TitleText}" IsVisible="{Binding Source={x:Static interop:OSPlatform.Linux}, Converter={StaticResource reversePlatformToBoolConverter}}"/>
                 </StackPanel>
                 <StackPanel Margin="16,8,0,0" Spacing="12" Orientation="Horizontal">
                     <Button Classes="bluehover">
