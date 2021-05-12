@@ -17,5 +17,6 @@
     <Application.Styles>
         <FluentTheme Mode="Dark"/>
         <StyleInclude Source="avares://BackBack/Assets/Icons.axaml"/>
+        <StyleInclude Source="avares://BackBack/Assets/ButtonStyles.axaml"/>
     </Application.Styles>
 </Application>
