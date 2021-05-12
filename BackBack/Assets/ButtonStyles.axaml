@@ -7,10 +7,18 @@
     </Design.PreviewWith>
 
     <!-- Add Styles Here -->
-            <Style Selector = "Button.round/template/ContentPresenter">
-                <Setter Property = "CornerRadius" Value = "90" />
+            <Style Selector="Button.round/template/ContentPresenter">
+                <Setter Property="CornerRadius" Value="90"/>
             </Style>
             <Style Selector = "Button.round">
-                <Setter Property = "BorderThickness" Value = "2" />
+                <Setter Property="BorderThickness" Value="2"/>
             </Style>
+
+    <Style Selector = "Button.blue">
+                <Setter Property="Background" Value="{DynamicResource BlueGradient}"/>
+            </Style>
+
+    <Style Selector="Button.bluehover:pointerover/template/ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource BlueGradientReverse}"/>
+    </Style>
 </Styles>

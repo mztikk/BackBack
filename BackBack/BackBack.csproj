@@ -9,6 +9,7 @@
   </ItemGroup>
   <ItemGroup>
     <AvaloniaResource Remove="Assets\ButtonStyles.axaml" />
+    <AvaloniaResource Remove="Assets\Colors.axaml" />
     <AvaloniaResource Remove="Assets\Icons.axaml" />
   </ItemGroup>
   <ItemGroup>
@@ -30,6 +31,11 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
+  </ItemGroup>
+  <ItemGroup>
+    <AvaloniaXaml Update="Assets\Colors.axaml">
+      <SubType>Designer</SubType>
+    </AvaloniaXaml>
   </ItemGroup>
   <ItemGroup>
     <AvaloniaXaml Update="Assets\ButtonStyles.axaml">

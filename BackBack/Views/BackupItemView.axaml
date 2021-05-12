@@ -10,15 +10,9 @@
     <UserControl.Resources>
         <converters:BoolToIntConverter x:Key="boolToIntConverter"/>
         <converters:BoolToThicknessConverter x:Key="boolToThicknessConverter"/>
-        <LinearGradientBrush x:Key="BlueGradient" StartPoint="100%,0%" EndPoint="100%,100%">
-            <LinearGradientBrush.GradientStops>
-                <GradientStop Offset="0" Color="#07BAFF"/>
-                <GradientStop Offset="1" Color="#4768F9"/>
-            </LinearGradientBrush.GradientStops>
-        </LinearGradientBrush>
     </UserControl.Resources>
 
-    <Panel PointerEnter="PointerEnter" PointerLeave="PointerLeave">
+    <Panel>
 
     <Panel Margin="14" PointerPressed="PointerPressed">
         <ExperimentalAcrylicBorder IsHitTestVisible="True" CornerRadius="4" Material="{DynamicResource ElementBackgroundMaterial}"/>
@@ -39,7 +33,7 @@
         </Border>
     </Panel>
 
-        <Button Width="48" Height="48" Classes="round" HorizontalAlignment="Right" VerticalAlignment="Top" IsVisible="{Binding Hovered}">
+        <Button Width="48" Height="48" Classes="round blue bluehover" HorizontalAlignment="Right" VerticalAlignment="Top" IsVisible="{Binding $parent.IsPointerOver}">
             <PathIcon Data="{DynamicResource edit_settings_regular}"/>
         </Button>
     </Panel>

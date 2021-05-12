@@ -34,14 +34,14 @@
                     <!--<Image Height="24" Source="{DynamicResource hdd3DrawingImage}"/>-->
                     <TextBlock Text="{Binding TitleText}"/>
                 </StackPanel>
-                <StackPanel Margin="0,8,0,0" Spacing="12" Orientation="Horizontal">
-                    <Button>
+                <StackPanel Margin="16,8,0,0" Spacing="12" Orientation="Horizontal">
+                    <Button Classes="bluehover">
                         <PathIcon Data="{DynamicResource add_regular}"/>
                     </Button>
-                    <Button>
+                    <Button Classes="bluehover">
                         <PathIcon Data="{DynamicResource play_regular}"/>
                     </Button>
-                    <Button>
+                    <Button Classes="bluehover">
                         <PathIcon Data="{DynamicResource delete_forever_regular}"/>
                     </Button>
                 </StackPanel>
