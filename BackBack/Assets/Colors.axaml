@@ -9,6 +9,12 @@
     <!-- Add Styles Here -->
     <Style>
         <Style.Resources>
+            <LinearGradientBrush x:Key="LightBlueGradient" StartPoint="100%,0%" EndPoint="100%,100%">
+                <LinearGradientBrush.GradientStops>
+                    <GradientStop Offset="0" Color="#0ADCFF"/>
+                    <GradientStop Offset="1" Color="#07BAFF"/>
+                </LinearGradientBrush.GradientStops>
+            </LinearGradientBrush>
             <LinearGradientBrush x:Key="BlueGradient" StartPoint="100%,0%" EndPoint="100%,100%">
                 <LinearGradientBrush.GradientStops>
                     <GradientStop Offset="0" Color="#07BAFF"/>

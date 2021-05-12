@@ -18,6 +18,12 @@
         <FluentTheme Mode="Dark"/>
         <StyleInclude Source="avares://BackBack/Assets/Icons.axaml"/>
         <StyleInclude Source="avares://BackBack/Assets/Colors.axaml"/>
-        <StyleInclude Source="avares://BackBack/Assets/ButtonStyles.axaml"/>
+
+        <Style Selector="PathIcon">
+            <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}"/>
+            <Setter Property="Opacity" Value="1"/>
+        </Style>
+        
+        <StyleInclude Source="avares://BackBack/Assets/ButtonStyles.axaml"/>  
     </Application.Styles>
 </Application>

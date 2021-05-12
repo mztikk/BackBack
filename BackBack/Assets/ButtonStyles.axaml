@@ -19,6 +19,6 @@
             </Style>
 
     <Style Selector="Button.bluehover:pointerover/template/ContentPresenter">
-        <Setter Property="Background" Value="{DynamicResource BlueGradientReverse}"/>
+        <Setter Property="Background" Value="{DynamicResource LightBlueGradient}"/>
     </Style>
 </Styles>
