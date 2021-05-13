@@ -10,13 +10,5 @@ namespace BackBack.Views
         public BackupItemView() => InitializeComponent();
 
         private void InitializeComponent() => AvaloniaXamlLoader.Load(this);
-
-        public void PointerPressed_Event(object sender, PointerPressedEventArgs e)
-        {
-            if (DataContext is BackupItemViewModel vm)
-            {
-                vm.Selected = !vm.Selected;
-            }
-        }
     }
 }

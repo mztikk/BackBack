@@ -1,4 +1,4 @@
-﻿using System.Windows.Input;
+﻿using Avalonia.Input;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
@@ -6,10 +6,7 @@ namespace BackBack.ViewModels
 {
     public class BackupItemViewModel : ViewModelBase
     {
-        public BackupItemViewModel()
-        {
-            PressedCommand = ReactiveCommand.Create(Pressed);
-        }
+        public BackupItemViewModel() => PressedCommand = ReactiveCommand.Create<PointerPressedEventArgs>(Pressed);
 
         [Reactive]
         public string? Name { get; set; }
@@ -22,8 +19,8 @@ namespace BackBack.ViewModels
         [Reactive]
         public bool Hovered { get; set; }
         [Reactive]
-        public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> PressedCommand { get; set; }
+        public ReactiveCommand<PointerPressedEventArgs, System.Reactive.Unit> PressedCommand { get; set; }
 
-        private void Pressed() => System.Console.WriteLine("pressed");
+        private void Pressed(PointerPressedEventArgs e) => Selected = !Selected;
     }
 }

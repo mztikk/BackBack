@@ -3,6 +3,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:BackBack;assembly=BackBack"
+             xmlns:i="using:Avalonia.Xaml.Interactivity"
+             xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
              xmlns:converters="clr-namespace:BackBack.Converters;assembly=BackBack"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BackBack.Views.BackupItemView">
@@ -14,7 +16,12 @@
 
     <Panel>
 
-    <Panel Margin="14" PointerPressed="PointerPressed_Event">
+    <Panel Margin="14">
+        <i:Interaction.Behaviors>
+            <ia:EventTriggerBehavior EventName="PointerPressed">
+                <ia:InvokeCommandAction Command="{Binding PressedCommand}"/>
+            </ia:EventTriggerBehavior>
+        </i:Interaction.Behaviors>
         <ExperimentalAcrylicBorder IsHitTestVisible="True" CornerRadius="4" Material="{DynamicResource ElementBackgroundMaterial}"/>
         
         <Border BorderThickness="{Binding Selected, Converter={StaticResource boolToThicknessConverter}, ConverterParameter=2}" BorderBrush="{DynamicResource BlueGradient}" CornerRadius="4" Padding="4">
