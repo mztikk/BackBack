@@ -11,11 +11,13 @@ namespace BackBack.Converters
 {
     public class BoolToThicknessConverter : IValueConverter
     {
+        public static readonly Thickness Zero = new(0);
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is bool b)
             {
-                return b ? parameter : new Thickness(0);
+                return b ? parameter : Zero;
             }
 
             throw new ArgumentException();
