@@ -17,8 +17,6 @@ namespace BackBack.ViewModels
         [Reactive]
         public bool Selected { get; set; }
         [Reactive]
-        public bool Hovered { get; set; }
-        [Reactive]
         public ReactiveCommand<PointerPressedEventArgs, System.Reactive.Unit> PressedCommand { get; set; }
 
         private void Pressed(PointerPressedEventArgs e) => Selected = !Selected;

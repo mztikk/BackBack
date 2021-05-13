@@ -20,5 +20,10 @@
 
     <Style Selector="Button.bluehover:pointerover/template/ContentPresenter">
         <Setter Property="Background" Value="{DynamicResource LightBlueGradient}"/>
+        <!--<Setter Property="Transitions">
+            <Transitions>
+                <IntegerTransition Property="Background" Duration="0:0:1"/>
+            </Transitions>
+        </Setter>-->
     </Style>
 </Styles>
