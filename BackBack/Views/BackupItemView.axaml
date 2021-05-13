@@ -6,12 +6,18 @@
              xmlns:i="using:Avalonia.Xaml.Interactivity"
              xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
              xmlns:converters="clr-namespace:BackBack.Converters;assembly=BackBack"
+             xmlns:core="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BackBack.Views.BackupItemView">
 
     <UserControl.Resources>
         <converters:BoolToIntConverter x:Key="boolToIntConverter"/>
         <converters:BoolToThicknessConverter x:Key="boolToThicknessConverter"/>
+        <converters:ReverseBoolToThicknessConverter x:Key="reverseBoolToThicknessConverter"/>
+        <converters:BoolToMarginSelection x:Key="boolToMarginSelection"/>
+        <converters:BoolToBrushTransparencyConverter x:Key="boolToBrushTransparencyConverter"/>
+        <core:Double x:Key="PathOpacity">0.6</core:Double>
+        <Thickness x:Key="BorderThickness">2</Thickness>
     </UserControl.Resources>
 
     <Panel>
@@ -22,21 +28,29 @@
                 <ia:InvokeCommandAction Command="{Binding PressedCommand}"/>
             </ia:EventTriggerBehavior>
         </i:Interaction.Behaviors>
+
         <ExperimentalAcrylicBorder IsHitTestVisible="True" CornerRadius="4" Material="{DynamicResource ElementBackgroundMaterial}"/>
         
-        <Border BorderThickness="{Binding Selected, Converter={StaticResource boolToThicknessConverter}, ConverterParameter=2}" BorderBrush="{DynamicResource BlueGradient}" CornerRadius="4" Padding="4">
-        <DockPanel Margin="8" IsHitTestVisible="True" MinHeight="80" MinWidth="400">
+        <Border
+            Margin="{Binding !Selected, Converter={StaticResource boolToThicknessConverter}, ConverterParameter={StaticResource BorderThickness}}"
+            BorderThickness="{Binding Selected, Converter={StaticResource boolToThicknessConverter}, ConverterParameter={StaticResource BorderThickness}}"
+            BorderBrush="{DynamicResource BlueGradient}"
+            CornerRadius="4">
+            <Panel Margin="8" IsHitTestVisible="True" MinHeight="80" MinWidth="400">
+            
+        <!--<DockPanel Margin="8" IsHitTestVisible="True" MinHeight="80" MinWidth="400">-->
 
-        <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Top" DockPanel.Dock="Top">
+        <StackPanel VerticalAlignment="Top" Orientation="Horizontal" Spacing="8">
             <TextBlock Text="{Binding Name}"/>
             <PathIcon Data="{DynamicResource checkmark_regular}" IsVisible="{Binding Selected, Mode=TwoWay}"/>
         </StackPanel>
-            <StackPanel VerticalAlignment="Bottom" DockPanel.Dock="Bottom" Margin="0,32,0,0" Spacing="8">
-                <TextBlock Text="{Binding Source}"/>
-                <TextBlock Text="↓"/>
-                <TextBlock Text="{Binding Target}"/>
+            <StackPanel VerticalAlignment="Bottom" Margin="0,48,0,0" Spacing="8">
+                <TextBlock Text="{Binding Source}" Opacity="{DynamicResource PathOpacity}"/>
+                <TextBlock Text="↓" Opacity="{DynamicResource PathOpacity}"/>
+                <TextBlock Text="{Binding Target}" Opacity="{DynamicResource PathOpacity}"/>
             </StackPanel>
-    </DockPanel>
+            </Panel>
+    <!--</DockPanel>-->
         </Border>
     </Panel>
 

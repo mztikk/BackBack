@@ -13,9 +13,9 @@ namespace BackBack.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is bool b && (parameter is int i || (parameter is string s && int.TryParse(s, out i))))
+            if (value is bool b)
             {
-                return b ? new Thickness(i) : new Thickness(0);
+                return b ? parameter : new Thickness(0);
             }
 
             throw new ArgumentException();
