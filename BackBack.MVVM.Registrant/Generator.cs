@@ -20,9 +20,15 @@ namespace BackBack.MVVM.Registrant
                 .WithAccessibility(Accessibility.Internal)
                 .WithMethod(new(Accessibility.Public, "void", "Register", new Parameter[] { new("ServiceContainer", "container") }, (bodyWriter) =>
                {
+                   IEnumerable<INamedTypeSymbol> types = GetMVVMTypes(context.Compilation);
+                   if (!types.Any())
+                   {
+                       return;
+                   }
+
                    bodyWriter.Write("container");
                    bodyWriter.IndentationLevel++;
-                   foreach (INamedTypeSymbol type in GetMVVMTypes(context.Compilation))
+                   foreach (INamedTypeSymbol type in types)
                    {
                        bodyWriter.WriteLine();
                        bodyWriter.Write($".Register<{type.Name}>()");
