@@ -50,7 +50,7 @@ namespace BackBack.Generator.Registrants
                 .WithUsings("System", "BackBack.Common", "LightInject")
                 .WithMethod(new(Accessibility.Internal, Static: true, async: false, "void", "Register", new Parameter[] { new("ServiceContainer", "container") }, (bodyWriter) =>
                 {
-                    bodyWriter.WriteLine($"new {mvvmRegistrant.ClassName}().Register(container);");
+                    bodyWriter.WriteLine($"new {mvvmRegistrant.Namespace}.{mvvmRegistrant.ClassName}().Register(container);");
 
                     INamedTypeSymbol? IServiceRegistrant = context.Compilation.GetTypeByMetadataName("BackBack.Common.IServiceRegistrant");
                     if (IServiceRegistrant is null)
