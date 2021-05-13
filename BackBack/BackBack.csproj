@@ -26,7 +26,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BackBack.Common\BackBack.Common.csproj" />
     <ProjectReference Include="..\BackBack.Dto\BackBack.Dto.csproj" />
-    <ProjectReference Include="..\BackBack.MVVM.Registrant\BackBack.MVVM.Registrant.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\BackBack.MVVM.Registrant\BackBack.Generator.Registrants.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
   <ItemGroup>
     <AvaloniaXaml Update="Assets\Icons.axaml">

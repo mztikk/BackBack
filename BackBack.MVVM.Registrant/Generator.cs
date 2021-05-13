@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
@@ -6,14 +7,14 @@ using Microsoft.CodeAnalysis.Text;
 using Sharpie;
 using Sharpie.Writer;
 
-namespace BackBack.MVVM.Registrant
+namespace BackBack.Generator.Registrants
 {
     [Generator]
     public class Generator : ISourceGenerator
     {
         public void Execute(GeneratorExecutionContext context)
         {
-            Class generatedClass = new Class("MVVMRegistrant")
+            Class mvvmRegistrant = new Class("MVVMRegistrant")
                 .WithBaseClass("IServiceRegistrant")
                 .WithUsings("System", "BackBack.Common", "BackBack.Views", "BackBack.ViewModels", "LightInject")
                 .SetNamespace("BackBack")
@@ -38,9 +39,38 @@ namespace BackBack.MVVM.Registrant
                    bodyWriter.EndStatement();
                }));
 
-            string str = ClassWriter.Write(generatedClass);
+            string str = ClassWriter.Write(mvvmRegistrant);
 
-            context.AddSource(generatedClass.ClassName, SourceText.From(str, Encoding.UTF8));
+            context.AddSource(mvvmRegistrant.ClassName, SourceText.From(str, Encoding.UTF8));
+
+            Class serviceRegistree = new Class("ServiceRegistree")
+                .WithAccessibility(Accessibility.Internal)
+                .SetStatic(true)
+                .SetNamespace("BackBack")
+                .WithUsings("System", "BackBack.Common", "LightInject")
+                .WithMethod(new(Accessibility.Internal, Static: true, async: false, "void", "Register", new Parameter[] { new("ServiceContainer", "container") }, (bodyWriter) =>
+                {
+                    bodyWriter.WriteLine($"new {mvvmRegistrant.ClassName}().Register(container);");
+
+                    INamedTypeSymbol? IServiceRegistrant = context.Compilation.GetTypeByMetadataName("BackBack.Common.IServiceRegistrant");
+                    if (IServiceRegistrant is null)
+                    {
+                        return;
+                    }
+
+                    IEnumerable<INamedTypeSymbol> types = GetAllTypes(context.Compilation).Where(x => x.AllInterfaces.Contains(IServiceRegistrant));
+                    if (!types.Any())
+                    {
+                        return;
+                    }
+
+                    foreach (INamedTypeSymbol type in types)
+                    {
+                        bodyWriter.WriteLine($"new {type}().Register(container);");
+                    }
+                }));
+
+            context.AddSource(serviceRegistree.ClassName, SourceText.From(ClassWriter.Write(serviceRegistree), Encoding.UTF8));
         }
 
         private static IEnumerable<INamedTypeSymbol> GetMVVMTypes(Compilation compilation)

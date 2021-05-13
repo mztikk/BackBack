@@ -16,8 +16,7 @@ namespace BackBack
             var container = new ServiceContainer();
             container.RegisterInstance(container);
 
-            new MVVMRegistrant().Register(container);
-            new ServiceRegistrant().Register(container);
+            ServiceRegistree.Register(container);
 
             DataTemplates.Add(container.GetInstance<ViewLocator>());
 

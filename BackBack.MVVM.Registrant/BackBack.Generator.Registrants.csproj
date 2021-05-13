@@ -28,6 +28,8 @@
   <PropertyGroup>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AnalysisLevel>latest</AnalysisLevel>
+    <AssemblyName>BackBack.Generator.Registrants</AssemblyName>
+    <RootNamespace>BackBack.Generator.Registrants</RootNamespace>
   </PropertyGroup>
 
 </Project>
