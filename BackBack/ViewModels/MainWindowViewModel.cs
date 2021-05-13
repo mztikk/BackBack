@@ -7,10 +7,12 @@ namespace BackBack.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        public MainWindowViewModel()
+        public MainWindowViewModel(BackupItemsViewModel backupItemsViewModel)
         {
             RunCommand = ReactiveCommand.Create(Run);
             DeleteCommand = ReactiveCommand.Create(Delete);
+
+            BackupItems = backupItemsViewModel;
         }
 
         [Reactive]
@@ -20,7 +22,7 @@ namespace BackBack.ViewModels
         [Reactive]
         public ReactiveCommand<Unit, Unit> DeleteCommand { get; set; }
 
-        public BackupItemsViewModel BackupItems { get; set; } = new();
+        public BackupItemsViewModel BackupItems { get; set; }
 
         private void Run()
         {

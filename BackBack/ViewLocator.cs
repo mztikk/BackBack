@@ -2,11 +2,19 @@ using System;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using BackBack.ViewModels;
+using LightInject;
 
 namespace BackBack
 {
     public class ViewLocator : IDataTemplate
     {
+        private readonly ServiceContainer _container;
+
+        public ViewLocator(ServiceContainer container)
+        {
+            _container = container;
+        }
+
         public bool SupportsRecycling => false;
 
         public IControl Build(object data)
@@ -16,7 +24,8 @@ namespace BackBack
 
             if (type != null)
             {
-                return (Control)Activator.CreateInstance(type)!;
+                //return (Control)Activator.CreateInstance(type)!;
+                return (IControl)_container.GetInstance(type);
             }
             else
             {

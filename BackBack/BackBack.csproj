@@ -18,11 +18,15 @@
     <PackageReference Include="Avalonia.Diagnostics" Version="0.10.4" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.4" />
     <PackageReference Include="Avalonia.Xaml.Behaviors" Version="0.10.4" />
-    <PackageReference Include="PropertySyncGenerator" Version="0.1.0.3" />
+    <PackageReference Include="LightInject" Version="6.4.0" />
+    <PackageReference Include="PropertySyncGenerator" Version="0.1.1" />
     <PackageReference Include="ReactiveUI.Fody" Version="13.3.2" />
+    <PackageReference Include="RFReborn" Version="1.5.5" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BackBack.Common\BackBack.Common.csproj" />
     <ProjectReference Include="..\BackBack.Dto\BackBack.Dto.csproj" />
+    <ProjectReference Include="..\BackBack.MVVM.Registrant\BackBack.MVVM.Registrant.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
   <ItemGroup>
     <AvaloniaXaml Update="Assets\Icons.axaml">

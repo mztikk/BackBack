@@ -3,9 +3,9 @@
              xmlns:local="using:BackBack"
              xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Avalonia.Svg.Skia"
              x:Class="BackBack.App" Name="BackBack">
-    <Application.DataTemplates>
+    <!--<Application.DataTemplates>
         <local:ViewLocator/>
-    </Application.DataTemplates>
+    </Application.DataTemplates>-->
 
     <Application.Resources>
         <Color x:Key="ViewBackground">#2D2D30</Color>
