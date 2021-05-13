@@ -1,4 +1,5 @@
-﻿using Avalonia.Input;
+﻿using System.Reactive;
+using Avalonia.Input;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
@@ -17,7 +18,7 @@ namespace BackBack.ViewModels
         [Reactive]
         public bool Selected { get; set; }
         [Reactive]
-        public ReactiveCommand<PointerPressedEventArgs, System.Reactive.Unit> PressedCommand { get; set; }
+        public ReactiveCommand<PointerPressedEventArgs, Unit> PressedCommand { get; set; }
 
         private void Pressed(PointerPressedEventArgs e) => Selected = !Selected;
     }

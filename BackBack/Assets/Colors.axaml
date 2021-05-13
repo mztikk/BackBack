@@ -13,7 +13,6 @@
                 <LinearGradientBrush.GradientStops>
                     <GradientStop Offset="0" Color="#a4bfef"/>
                     <GradientStop Offset="1" Color="#6a93cb"/>
-                    <!--<GradientStop Offset="2" Color="#07BAFF"/>-->
                 </LinearGradientBrush.GradientStops>
             </LinearGradientBrush>
             <LinearGradientBrush x:Key="BlueGradient" StartPoint="100%,0%" EndPoint="100%,100%">

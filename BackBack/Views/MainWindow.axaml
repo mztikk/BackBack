@@ -49,10 +49,10 @@
                     <Button Classes="bluehover">
                         <PathIcon Data="{DynamicResource add_regular}"/>
                     </Button>
-                    <Button Classes="bluehover">
+                    <Button Classes="bluehover" Command="{Binding RunCommand}">
                         <PathIcon Data="{DynamicResource play_regular}"/>
                     </Button>
-                    <Button Classes="bluehover">
+                    <Button Classes="bluehover" Command="{Binding DeleteCommand}">
                         <PathIcon Data="{DynamicResource delete_forever_regular}"/>
                     </Button>
                 </StackPanel>

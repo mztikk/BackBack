@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using BackBack.Dto;
 
 namespace BackBack.ViewModels
@@ -18,5 +20,7 @@ namespace BackBack.ViewModels
             Items.Add(item2);
         }
         public ObservableCollection<BackupItemViewModel> Items { get; } = new();
+
+        public IEnumerable<BackupItemViewModel> GetSelected() => Items.Where(x => x.Selected);
     }
 }
